@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manus AI - Static Japan Itinerary</title>
+    <style>
+        :root {
+            --bg-primary: #1a1b1e;
+            --bg-secondary: #212326;
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ba1a6;
+            --accent-blue: #2b95d6;
+            --accent-green: #3dcc91;
+            --border-color: #2f3336;
+            --hover-bg: #2a2d31;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow: hidden; /* Prevent body scrolling */
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+            overflow: hidden; /* Prevent app container scrolling */
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            /* Placeholder for Manus icon */
+            width: 24px;
+            height: 24px;
+            background-color: var(--accent-blue);
+            border-radius: 4px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .nav-title {
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-icon {
+            /* Placeholder for icons */
+            width: 20px;
+            height: 20px;
+            background-color: var(--text-secondary);
+            cursor: pointer;
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+
+        .link-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M10.586 13.414a1 1 0 0 1-1.414 1.414A5 5 0 0 1 6.293 9.172l1.414-1.414a1 1 0 1 1 1.414 1.414L8.414 9.879a3 3 0 0 0 4.243 4.242l.707-.707a1 1 0 0 1 1.414 0zm2.828-2.828a1 1 0 0 1 1.414-1.414A5 5 0 0 1 17.707 14.828l-1.414 1.414a1 1 0 1 1-1.414-1.414l.707-.707a3 3 0 0 0-4.243-4.242l-.707.707a1 1 0 0 1-1.414 0z"/></svg>'); }
+        .copy-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>'); }
+        .kebab-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>'); }
+        .close-panel-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>'); }
+        .open-panel-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>'); }
+
+        .main-content {
+            flex: 1; /* Grow to fill remaining space */
+            display: grid;
+            grid-template-columns: 1.5fr 1fr; /* Swapped column ratio */
+            gap: 1rem;
+            padding: 1rem;
+            overflow: hidden; /* Prevent overall scroll */
+            transition: grid-template-columns 0.5s ease;
+            background-color: #262729;
+        }
+
+        .main-content.right-panel-hidden {
+            grid-template-columns: 1fr;
+        }
+
+        .left-panel, .right-panel {
+            background-color: #262729;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow-y: auto; /* Allow individual column scrolling */
+            padding: 1.5rem;
+            transition: all 0.5s ease;
+            /* Hide scrollbar for WebKit browsers */
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            /* Hide scrollbar for Firefox */
+            scrollbar-width: none;
+            /* Hide scrollbar for IE/Edge (older versions) */
+            -ms-overflow-style: none;
+        }
+
+        .left-panel {
+            transform-origin: center;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .left-panel.centered {
+            max-width: 800px;
+            transform: translateX(0);
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem; /* Reduced gap */
+            padding: 1rem; /* Reduced padding */
+            background-color: #262628; /* Updated background color */
+            /* Keep other styles like border, overflow */
+            overflow-y: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .right-panel.hidden {
+            transform: translateX(50px);
+            opacity: 0;
+        }
+
+        /* Fix for transition lag */
+        .main-content.right-panel-hidden .right-panel {
+            position: absolute;
+            right: -9999px;
+            visibility: hidden;
+        }
+
+        /* Left Panel: Chat/Task Trace */
+        .user-prompt, .ai-response {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            background-color: #353535;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+
+        .ai-response {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            background-color: #262729;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+
+        .ai-response-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: bold;
+        }
+
+        .ai-icon { /* Placeholder for Manus icon */
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-blue);
+            border-radius: 3px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .task-section {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .task-step {
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 25px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .task-step.visible {
+             opacity: 1;
+             transform: translateY(0);
+        }
+
+        .task-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--border-color);
+            border-radius: 50%;
+            border: 2px solid var(--bg-secondary);
+            z-index: 2;
+        }
+
+        .task-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 15px;
+            bottom: -1.5rem;
+            width: 2px;
+            background-color: var(--border-color);
+            z-index: 1;
+        }
+
+        .task-step.active::before {
+            background-color: var(--accent-green);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 5px var(--accent-green);
+        }
+
+        .task-step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .task-step-header::before {
+             content: none;
+        }
+
+        .task-details {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-left: 0;
+            padding: 0.5rem;
+            background-color: var(--bg-primary);
+            border-radius: 20px;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+        }
+
+        .typing-effect::after {
+            content: '|';
+            animation: cursor 1s infinite step-end;
+        }
+
+        @keyframes cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .task-icon {
+            width: 16px;
+            height: 16px;
+            background-color: var(--text-secondary);
+            flex-shrink: 0;
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+
+        .command-icon {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M4 17h16v2H4zm16-9h-2V6h2v2zm-4 0h-2V6h2v2zm-4 0H8V6h2v2z"/></svg>');
+        }
+
+        .file-icon {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>');
+        }
+
+        .search-icon {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
+        }
+
+        .browse-icon {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>');
+        }
+
+        .scroll-icon {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="m12 6-1.41 1.41L13.17 10H4v2h9.17l-2.58 2.59L12 16l6-6-6-6z"/></svg>');
+        }
+
+        .task-final,
+        .task-replay-completed {
+            opacity: 0;
+            transition: opacity 0.5s ease-in 0.5s;
+            visibility: hidden;
+        }
+
+        .task-final.visible,
+        .task-replay-completed.visible {
+             opacity: 1;
+             visibility: visible;
+        }
+
+        .task-final-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .task-final-text::before {
+            content: '✔';
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .watch-button {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar .nav-icon {
+            width: 16px;
+            height: 16px;
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="m7 10 5 5 5-5H7z"/></svg>');
+        }
+
+        /* Right Panel: Document Viewer / Image Viewer */
+        #dynamic-image, #dynamic-image-2 {
+             width: 95%; /* Slightly increase width */
+             max-height: 40%; /* Adjust max height */
+             object-fit: contain;
+             border-radius: 6px;
+             border: 1px solid var(--border-color);
+             background-color: var(--bg-secondary);
+             margin: 0; /* Remove auto margin */
+        }
+
+        #website-display {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background-color: var(--bg-secondary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            width: 95%;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid var(--border-color);
+        }
+
+        #dynamic-image.hidden,
+        #dynamic-image-2.hidden,
+        #website-display.hidden {
+             display: none; /* Hide images & website after animation */
+        }
+
+         /* Hide original document content initially and add transition */
+         .document-header,
+         .document-content {
+             display: none; /* Start hidden */
+             opacity: 0;
+             transition: opacity 0.5s ease-in-out;
+         }
+          .document-header.visible,
+          .document-content.visible {
+              display: block; /* Show after animation */
+              opacity: 1; /* Fade in */
+          }
+          /* Ensure header flex is re-applied */
+         .document-header.visible {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding-bottom: 1rem;
+             margin-bottom: 1rem;
+             border-bottom: 1px solid var(--border-color);
+         }
+
+
+        /* Restore document content styles */
+        .document-content h3 {
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+        .document-content h4 {
+            color: var(--text-primary); /* Adjusted color for dark mode */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .document-content ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .document-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+         .document-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+         }
+         .document-content .time-block {
+            color: var(--text-primary);
+            font-weight: 500;
+         }
+         .document-content .proposal-list li,
+         .document-content .transport-list li {
+            color: var(--text-primary);
+         }
+          .document-content .proposal-list strong {
+              color: var(--accent-green);
+          }
+         .document-content .transport-list ul {
+             margin-top: 0.5rem;
+             margin-bottom: 0; /* Remove extra bottom margin */
+         }
+         .document-content .transport-list ul li{
+             color: var(--text-secondary);
+             list-style-type: circle;
+             margin-left: 1rem; /* Indent sub-list */
+         }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .right-panel {
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+             .top-nav {
+                 padding: 0.75rem 1rem;
+             }
+             .nav-title {
+                 display: none;
+             }
+             .main-content {
+                 padding: 0.5rem;
+             }
+             .left-panel, .right-panel {
+                 padding: 1rem;
+             }
+         }
+
+        .task-replay-completed {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            background-color: #383638;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            transition: opacity 0.5s ease-in 0.5s;
+            visibility: hidden;
+        }
+
+        .task-replay-completed.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .task-replay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer; /* Make header clickable */
+        }
+
+        /* New styles for the content area and collapsed state */
+        .task-replay-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+            max-height: 1000px; /* Set a large max-height for expanded state */
+        }
+
+        .task-replay-completed.collapsed .task-replay-content {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            border-top: none; /* Optional: Hide border when collapsed */
+        }
+
+        /* Rotate collapse icon when collapsed */
+        .task-replay-completed.collapsed .task-replay-header .collapse-icon {
+            transform: rotate(180deg);
+        }
+
+        .computer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .computer-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        .computer-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .computer-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .computer-status {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .editor-icon {
+            width: 16px;
+            height: 16px;
+            background-color: var(--text-secondary);
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .task-progress {
+            margin-top: 1rem;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .task-progress.collapsed {
+            max-height: 0;
+        }
+
+        .task-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: #2d2c2e;
+            border-radius: 4px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .task-item.completed {
+            color: var(--text-primary);
+        }
+
+        .task-item.completed::before {
+            content: '✓';
+            color: var(--accent-green);
+        }
+
+        .collapse-icon {
+            width: 20px;
+            height: 20px;
+            background-color: var(--text-secondary);
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>');
+            mask-repeat: no-repeat;
+            mask-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .task-progress.collapsed .collapse-icon {
+            transform: rotate(180deg);
+        }
+
+        .right-panel.maximized {
+            grid-column: 1 / -1;
+            width: 100%;
+            max-width: 100%;
+        }
+        @media (max-width: 1024px) {
+            .right-panel.maximized {
+                margin-top: 0;
+            }
+        }
+
+        /* Style the corner controls */
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .document-corner-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Styles for File Attachments Section */
+        .file-attachments {
+            margin-top: 1.5rem; /* Space above the section */
+            padding: 1rem;
+            background-color: #383638; /* Match task replay background */
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            transition: opacity 0.5s ease-in 0.5s;
+            visibility: hidden;
+        }
+
+        .file-attachments.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .file-attachments-header {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            gap: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: #2d2c2e; /* Darker item background */
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            gap: 0.75rem;
+            cursor: default; /* Indicate non-clickable */
+            transition: background-color 0.2s ease;
+        }
+
+        .file-item:hover {
+            background-color: #353535; /* Slight hover effect */
+        }
+
+        .file-icon-container {
+            flex-shrink: 0;
+        }
+
+        .file-icon-placeholder {
+            width: 24px;
+            height: 24px;
+            background-color: var(--accent-blue); /* Blue icon color */
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+
+        .file-icon-placeholder.text {
+             mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>');
+        }
+
+        .file-icon-placeholder.code {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>');
+        }
+         .file-icon-placeholder.view-all {
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z"/></svg>');
+            background-color: var(--text-secondary); /* Grey icon */
+        }
+
+        .file-info {
+            overflow: hidden; /* Prevent text overflow */
+        }
+
+        .file-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-meta {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+         .view-all-files-button {
+             color: var(--text-secondary);
+             font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo-icon"></div>
+                <div class="logo-text">manus</div>
+            </div>
+            <div class="nav-title">7-Day Japan Itinerary with Proposal Ideas</div>
+            <div class="nav-right">
+                <div class="nav-icon toggle-panel-icon" id="toggle-panel"></div>
+                
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="left-panel" id="left-panel">
+                <div class="user-prompt">
+                    I need a 7-day Japan itinerary for April 15-23 from Seattle, with a $2500-5000 budget for my fiancée and me. We love historical sites, hidden gems, and Japanese culture (kendo, tea ceremonies, Zen meditation). We want to see Nara's deer and explore cities on foot. I plan to propose during this trip and need a special location recommendation. Please provide a detailed itinerary and a simple HTML travel handbook with maps, attraction descriptions, essential Japanese phrases, and travel tips we can reference throughout our journey.
+                </div>
+
+                <div class="ai-response">
+                    <div class="ai-response-header">
+                        <span class="ai-icon"></span> manus
+                    </div>
+                    I'll help you create a 7-day Japan itinerary for your trip with your fiancée from April 15-23, including a special location for your proposal. I'll research historical sites, hidden gems, and cultural experiences like kendo, tea ceremonies, and Zen meditation, as well as plan for Nara's deer park visit. I'll also create a detailed HTML travel handbook with maps, attraction descriptions, essential Japanese phrases, and travel tips. Let me get started on this right away!
+                    <div class="task-section" id="task-section">
+                        <!-- Task steps will be injected here by JavaScript -->
+                    </div>
+                </div>
+                <div class="task-final" id="task-final-summary">
+                    <div class="task-final-text">Finalize and prepare travel documentation for delivery</div>
+                    <div class="progress-bar">8 / 8 <span class="nav-icon"></span></div>
+                </div>
+                <div class="task-replay-completed" id="task-replay-completed">
+                    <div class="task-replay-header" id="task-replay-header"> 
+                        <div class="computer-info">
+                            <div class="computer-icon"></div>
+                            <div class="computer-details">
+                                <div class="computer-name">Manus's computer</div>
+                                <div class="computer-status">
+                                    <span class="editor-icon"></span>
+                                    Manus is using Editor
+                                </div>
+                            </div>
+                        </div><!-- Add collapse icon here -->
+                    </div>
+                    <div class="task-replay-content" id="task-replay-content"> <!-- Wrap content -->
+                        <div class="task-progress" id="task-progress">
+                            <div class="task-progress-header" id="task-progress-header">
+                                <span>Task progress</span>
+                                <span>8 / 8 <span class="collapse-icon"></span></span>
+                            </div>
+                            <div class="task-list">
+                                <div class="task-item completed">Research Japan travel basics and entry requirements</div>
+                                <div class="task-item completed">Create comprehensive travel preparation checklist</div>
+                                <div class="task-item completed">Research historical sites, cultural attractions, and hidden gems in Kyoto, Tokyo, and Nara</div>
+                                <div class="task-item completed">Develop comprehensive 7-day Japan itinerary</div>
+                                <div class="task-item completed">Identify and research potential romantic proposal locations</div>
+                                <div class="task-item completed">Compile essential Japanese phrases and travel tips</div>
+                                <div class="task-item completed">Create detailed HTML travel handbook with maps and guides</div>
+                                <div class="task-item completed">Finalize and prepare travel documentation for delivery</div>
+                            </div>
+                        </div>
+                    </div> <!-- End wrap -->
+                </div>
+
+                <!-- Static File Attachments Section -->
+                <div class="file-attachments">
+                    <div class="file-list">
+                        <div class="file-item">
+                            <div class="file-icon-container">
+                                <div class="file-icon-placeholder text"></div>
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">7day_itinerary</div>
+                                <div class="file-meta">Text・4.14 KB</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon-container">
+                                <div class="file-icon-placeholder text"></div>
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">proposal_locations</div>
+                                <div class="file-meta">Text・6.20 KB</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon-container">
+                                <div class="file-icon-placeholder code"></div>
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">japan_travel_handbook.html</div>
+                                <div class="file-meta">Code・52.68 KB</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon-container">
+                                <div class="file-icon-placeholder text"></div>
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">todo</div>
+                                <div class="file-meta">Text・1.89 KB</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon-container">
+                                <div class="file-icon-placeholder text"></div>
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">japan_research</div>
+                                <div class="file-meta">Text・3.75 KB</div>
+                            </div>
+                        </div>
+                         <div class="file-item">
+                            <div class="file-icon-container">
+                                <div class="file-icon-placeholder view-all"></div>
+                            </div>
+                            <div class="file-info">
+                                <div class="view-all-files-button">View all files in this task</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Static File Attachments Section -->
+
+            </div>
+
+            <div class="right-panel" id="right-panel">
+                 <img id="dynamic-image" src="" alt="Japan Scene 1">
+                 <p id="website-display">Browsing...</p>
+                 <img id="dynamic-image-2" src="" alt="Japan Scene 2">
+                 <!-- Original document content - initially hidden -->
+                 <div class="document-header" id="document-header">
+                      <div class="document-title">
+                          <span class="doc-icon"></span> 7day_itinerary
+                      </div>
+                      <div class="document-controls">
+                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z\'/%3E%3C/svg%3E');"></span>
+                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z\'/%3E%3C/svg%3E');"></span>
+                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z\'/%3E%3C/svg%3E');"></span>
+                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M10.59 7.41 12 6l6 6-6 6-1.41-1.41L15.17 12z\'/%3E%3C/svg%3E');"></span>
+                      </div>
+                 </div>
+                 <div class="document-content" id="document-content">
+                     <!-- Itinerary will be injected here -->
+                 </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+         const japanImageUrls = [
+            "https://ttgasia.2017.ttgasia.com/wp-content/uploads/sites/2/2023/04/Dotoburi-in-Osaka_640.jpg",
+            "https://www.aljazeera.com/wp-content/uploads/2024/07/AFP__20240311__34LB4CK__v1__HighRes__JapanLifestyleTourism-1-1721361890.jpg?resize=1920%2C1440",
+            "https://www.thetimes.com/imageserver/image/%2Fmethode%2Ftimes%2Fprod%2Fweb%2Fbin%2Fec6f7cf8-6dbe-4b56-9972-cbf4fbc76462.jpg?crop=1564%2C880%2C318%2C0",
+            "https://www.hindustantimes.com/ht-img/img/2024/04/29/550x309/japan_tourism_1713344920936_1714387811211.jpg",
+            "https://media.istockphoto.com/id/1161555395/photo/osaka-tower-and-view-of-the-neon-advertisements-in-shinsekai-district-at-dusk-osaka-japan.jpg?s=612x612&w=0&k=20&c=2z2ViOxKPfKzq_rDtCE_aW7KxbROK7MUJ-ti-Oqf4KQ=",
+            "https://pohcdn.com/guide/sites/default/files/styles/paragraph__live_banner__lb_image__1880bp/public/live_banner/japan-1.jpg",
+            "https://res.cloudinary.com/jnto/image/upload/w_600,fl_lossy,f_auto,q_auto,c_scale/v1/media/filer_public/4d/e0/4de04120-b27a-4f12-b9e4-413c6fcbe7fb/49tokushima_udatsu_edit_3_dbwqpo",
+            "https://img.kyodonews.net/english/public/images/posts/b0467b7bb63b5f0fbaa42ef56c03f801/photo_l.jpg"
+         ];
+
+        const japanImageUrls2 = [
+            "https://miro.medium.com/v2/resize:fit:1118/1*AauvYRhYA6GHTdkC4VbWgA.png",
+            "https://blog.btrax.com/wp-content/uploads/2010/08/2.jpg",
+            "https://digitalcommunications.wp.st-andrews.ac.uk/files/2016/02/japanese-design.jpg",
+            "https://assets.hongkiat.com/uploads/japanese-web-design/sankei.jpg",
+            "https://www.humblebunny.com/wp-content/uploads/example-japanese-web-design-kakaku.jpg",
+            "https://nothingapps.com/wp-content/uploads/2024/01/example-japanese-web-design-yahoo-2013-2020.jpg",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNkiXmARqgMPtFfQjIH0CFuNovv-D16Jlhaw&s",
+            "https://speckyboy.com/wp-content/uploads/2016/05/japanese-web-deign-01.jpg"
+        ];
+
+        const japaneseWebsiteUrls = [
+            "yahoo.co.jp",
+            "rakuten.co.jp",
+            "cookpad.com",
+            "nikkei.com",
+            "mercari.com/jp",
+            "zozo.jp",
+            "kakaku.com",
+            "ameblo.jp"
+        ];
+
+        const processTasks = [
+            {
+                title: "Researching Japan travel basics",
+                details: [
+                    { type: "search", text: "Searching: Best time to visit Japan in April" }
+                ]
+            },
+            {
+                title: "Creating todo checklist",
+                details: [
+                    { type: "file", text: "Creating file: japan_trip_checklist.md" }
+                ]
+            },
+            {
+                title: "Planning 7-day itinerary",
+                details: [
+                    { type: "browse", text: "Browsing: Kyoto travel guides" }
+                ]
+            },
+            {
+                title: "Researching transportation",
+                details: [
+                    { type: "search", text: "Searching: Japan Rail Pass information" }
+                ]
+            },
+            {
+                title: "Creating HTML travel handbook",
+                details: [
+                    { type: "file", text: "Creating file: japan_travel_handbook.html" }
+                ]
+            },
+            {
+                title: "Researching proposal locations",
+                details: [
+                    { type: "browse", text: "Browsing: Cherry blossom viewing locations" }
+                ]
+            },
+            {
+                title: "Finalizing documentation",
+                details: [
+                    { type: "command", text: "Executing command: compile_documents" }
+                ]
+            },
+            {
+                title: "Preparing delivery",
+                details: [
+                    { type: "file", text: "Creating file: README.md" }
+                ]
+            }
+        ];
+
+        const taskSection = document.getElementById('task-section');
+        const leftPanel = document.getElementById('left-panel');
+        const finalSummary = document.getElementById('task-final-summary');
+        const replayCompleted = document.getElementById('task-replay-completed');
+        const dynamicImage = document.getElementById('dynamic-image');
+        const dynamicImage2 = document.getElementById('dynamic-image-2');
+        const websiteDisplay = document.getElementById('website-display');
+        const documentHeader = document.getElementById('document-header');
+        const documentContent = document.getElementById('document-content');
+        const rightPanel = document.getElementById('right-panel');
+        let currentStepIndex = 0;
+        let previousStepElement = null;
+        let isProcessingTask = false; // Flag to track if a task is currently being processed
+
+        function displayNextStep() {
+            // If we're already processing a task, don't start another one
+            if (isProcessingTask) return;
+            
+            if (currentStepIndex < processTasks.length) {
+                isProcessingTask = true; // Set flag to indicate we're processing
+                const task = processTasks[currentStepIndex];
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'task-step';
+                
+                // Create header
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'task-step-header';
+                headerDiv.textContent = `Task ${currentStepIndex + 1}: ${task.title}`;
+                stepDiv.appendChild(headerDiv);
+
+                // Create details container
+                const detailsContainer = document.createElement('div');
+                detailsContainer.className = 'task-details-container';
+                
+                // Add each detail with typing effect
+                task.details.forEach((detail, detailIndex) => {
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'task-details';
+                    
+                    // Add appropriate icon based on type
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = `task-icon ${detail.type}-icon`;
+                    detailDiv.appendChild(iconDiv);
+                    
+                    // Add detail text with typing effect
+                    const textSpan = document.createElement('span');
+                    textSpan.className = 'typing-effect';
+                    detailDiv.appendChild(textSpan);
+                    
+                    detailsContainer.appendChild(detailDiv);
+                    
+                    // Only show one detail at a time, each completes in 0.5 seconds
+                    if (detailIndex === 0) {
+                        // Start typing the first detail immediately
+                        const typingSpeed = calculateTypingSpeed(detail.text, 500);
+                        typeText(textSpan, detail.text, 0, typingSpeed);
+                    } else {
+                        // Hide details that will be shown later
+                        detailDiv.style.opacity = '0';
+                    }
+                });
+                
+                stepDiv.appendChild(detailsContainer);
+                taskSection.appendChild(stepDiv);
+
+                if(previousStepElement) {
+                    previousStepElement.classList.remove('active');
+                }
+                
+                setTimeout(() => {
+                    stepDiv.classList.add('visible', 'active');
+                }, 10);
+                
+                previousStepElement = stepDiv;
+                stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                // Update images and website display
+                const imageIndex = currentStepIndex % japanImageUrls.length;
+                dynamicImage.src = japanImageUrls[imageIndex];
+                dynamicImage.alt = `Japan Scene 1 - ${imageIndex + 1}`;
+                
+                const imageIndex2 = currentStepIndex % japanImageUrls2.length;
+                dynamicImage2.src = japanImageUrls2[imageIndex2];
+                dynamicImage2.alt = `Japan Scene 2 - ${imageIndex2 + 1}`;
+
+                const websiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
+                websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[websiteIndex]}`;
+
+                currentStepIndex++;
+                
+                // Process the details one by one, each taking 0.5 seconds
+                processDetailsSequentially(stepDiv, task.details, 0);
+            } else {
+                if(previousStepElement) {
+                     previousStepElement.classList.remove('active');
+                }
+                finalSummary.classList.add('visible');
+                replayCompleted.classList.add('visible');
+                // Add file attachments visibility
+                document.querySelector('.file-attachments').classList.add('visible');
+                leftPanel.scrollTop = leftPanel.scrollHeight;
+
+                dynamicImage.classList.add('hidden');
+                dynamicImage2.classList.add('hidden');
+                websiteDisplay.classList.add('hidden');
+
+                documentContent.innerHTML = `
+                    <h3>7-Day Japan Itinerary (April 15-23, 2025)</h3>
+                    <h4>Overview</h4>
+                    <p>This itinerary is designed for a couple traveling from Seattle to Japan in April, focusing on historical sites, cultural experiences, and hidden gems. The plan includes Tokyo, Kyoto, and Nara, with opportunities to experience kendo, tea ceremonies, and Zen meditation. A special romantic proposal location is included during cherry blossom season.</p>
+                    <h4>Day 1 (April 15): Arrival in Tokyo</h4>
+                    <p><span class="time-block">Morning:</span> Arrive at Narita/Haneda Airport</p>
+                    <p><span class="time-block">Afternoon:</span></p>
+                    <ul>
+                        <li>Check into hotel in Tokyo</li>
+                        <li>Exchange JR Pass voucher at airport JR office</li>
+                        <li>Light exploration of hotel neighborhood</li>
+                    </ul>
+                    <p><span class="time-block">Evening:</span></p>
+                    <ul>
+                        <li>Dinner at local restaurant near accommodation</li>
+                        <li>Early night to recover from jet lag</li>
+                    </ul>
+                    <h4>Day 2 (April 16): Tokyo Exploration - Modern & Traditional</h4>
+                    <p><span class="time-block">Morning:</span></p>
+                    <ul>
+                        <li>Visit Meiji Shrine and Yoyogi Park (peaceful forest walk)</li>
+                        <li>Explore Harajuku and Takeshita Street</li>
+                    </ul>
+                    <p><span class="time-block">Afternoon:</span></p>
+                    <ul>
+                        <li>Shibuya Crossing and Shibuya Sky observation deck</li>
+                        <li>Shopping in Shibuya</li>
+                    </ul>
+                    <p><span class="time-block">Evening:</span></p>
+                    <ul>
+                        <li>Dinner in Harmonica Yokocho (hidden gem in Kichijoji)</li>
+                        <li>Explore this former black market area with small izakayas and shops</li>
+                    </ul>
+                    <h4>Day 3 (April 17): Tokyo Hidden Gems & Cultural Experience</h4>
+                     <p><span class="time-block">Morning:</span></p>
+                    <ul>
+                        <li>Visit Gotokuji Temple (home of the beckoning cat figurines)</li>
+                        <li>Explore Shimokitazawa neighborhood (trendy area with vintage shops)</li>
+                    </ul>
+                     <p><span class="time-block">Afternoon:</span></p>
+                    <ul class="proposal-list">
+                        <li><strong>Proposal Opportunity:</strong> Chidorigafuchi Park for cherry blossom viewing and boat ride</li>
+                        <li>Stroll along the Imperial Palace East Gardens</li>
+                    </ul>
+                     <p><span class="time-block">Evening:</span></p>
+                     <ul>
+                        <li>Dinner at Ebisu Yokocho food alley</li>
+                        <li>Optional: Tokyo Tower night view</li>
+                    </ul>
+                    <h4>Day 4 (April 18): Travel to Kyoto & First Impressions</h4>
+                     <p><span class="time-block">Morning:</span></p>
+                     <ul>
+                        <li>Shinkansen from Tokyo to Kyoto (2-2.5 hours)</li>
+                        <li>Check into Kyoto accommodation</li>
+                    </ul>
+                     <p><span class="time-block">Afternoon:</span></p>
+                     <ul>
+                        <li>Visit Fushimi Inari Shrine (thousand torii gates)</li>
+                        <li>Explore southern Higashiyama district</li>
+                    </ul>
+                     <p><span class="time-block">Evening:</span></p>
+                     <ul>
+                        <li>Dinner in Pontocho Alley</li>
+                        <li>Evening stroll along Kamogawa River</li>
+                    </ul>
+                    <h4>Day 5 (April 19): Kyoto Cultural Immersion</h4>
+                     <p><span class="time-block">Morning:</span></p>
+                     <ul>
+                        <li>Tea Ceremony experience at WAK JAPAN or Toyokuni Shrine</li>
+                        <li>Zen Meditation session at a local temple</li>
+                    </ul>
+                     <p><span class="time-block">Afternoon:</span></p>
+                     <ul>
+                        <li>Kendo experience through WAK JAPAN</li>
+                        <li>Visit Kinkaku-ji (Golden Pavilion)</li>
+                    </ul>
+                     <p><span class="time-block">Evening:</span></p>
+                     <ul class="proposal-list">
+                        <li><strong>Proposal Opportunity:</strong> Maruyama Park during evening cherry blossom illumination</li>
+                        <li>Dinner at traditional Kyoto restaurant</li>
+                    </ul>
+                    <h4>Day 6 (April 20): Nara Day Trip</h4>
+                     <p><span class="time-block">Morning:</span></p>
+                     <ul><li>Train from Kyoto to Nara (30-45 minutes)</li></ul>
+                     <p><span class="time-block">Full Day in Nara:</span></p>
+                     <ul>
+                        <li>Nara Park and friendly deer</li>
+                        <li>Todai-ji Temple and Great Buddha</li>
+                        <li>Kofukuji Temple and five-story pagoda</li>
+                        <li>Kasuga Taisha Shrine</li>
+                    </ul>
+                     <p><span class="time-block">Evening:</span></p>
+                     <ul>
+                        <li>Return to Kyoto</li>
+                        <li>Dinner in Gion district</li>
+                        <li>Possible geisha spotting in Gion</li>
+                    </ul>
+                    <h4>Day 7 (April 21): Arashiyama & Northern Kyoto</h4>
+                    <p><span class="time-block">Morning:</span></p>
+                     <ul>
+                        <li>Visit Arashiyama Bamboo Grove (early to avoid crowds)</li>
+                        <li>Tenryu-ji Temple and gardens</li>
+                        <li>Monkey Park Iwatayama</li>
+                    </ul>
+                     <p><span class="time-block">Afternoon:</span></p>
+                     <ul class="proposal-list">
+                        <li><strong>Proposal Opportunity:</strong> Romantic boat ride on the Hozugawa River</li>
+                        <li>Visit Ryoan-ji Temple (famous rock garden)</li>
+                    </ul>
+                     <p><span class="time-block">Evening:</span></p>
+                    <ul>
+                        <li>Farewell dinner at upscale restaurant</li>
+                        <li>Final night in Kyoto</li>
+                    </ul>
+                    <h4>Day 8 (April 22): Return to Tokyo & Departure Preparation</h4>
+                     <p><span class="time-block">Morning:</span></p>
+                     <ul>
+                        <li>Shinkansen from Kyoto to Tokyo</li>
+                        <li>Last-minute shopping in Tokyo</li>
+                    </ul>
+                     <p><span class="time-block">Afternoon:</span></p>
+                     <ul>
+                        <li>Visit any missed Tokyo attractions</li>
+                        <li>Pack and prepare for departure</li>
+                    </ul>
+                    <p><span class="time-block">Evening:</span></p>
+                    <ul><li>Final dinner in Tokyo</li></ul>
+
+                    <h4>Day 9 (April 23): Departure</h4>
+                    <p><span class="time-block">Morning/Afternoon:</span></p>
+                    <ul>
+                        <li>Transfer to Narita/Haneda Airport</li>
+                        <li>Departure flight to Seattle</li>
+                    </ul>
+
+                    <h3>Proposal Location Recommendations</h3>
+                    <ul class="proposal-list">
+                         <li><strong>Chidorigafuchi Park (Tokyo):</strong> Romantic boat ride surrounded by cherry blossoms</li>
+                         <li><strong>Maruyama Park (Kyoto):</strong> Famous for its weeping cherry trees, especially beautiful during evening illumination</li>
+                         <li><strong>Hozugawa River (Arashiyama):</strong> Scenic boat ride through beautiful natural landscapes</li>
+                    </ul>
+
+                    <h3>Transportation Notes</h3>
+                     <ul class="transport-list">
+                         <li>Activate 7-day JR Pass on April 17 (Day 3) to maximize usage for long-distance travel</li>
+                         <li>Use local transit in Tokyo for first two days</li>
+                         <li>JR Pass will cover:
+                             <ul>
+                                 <li>Tokyo to Kyoto shinkansen</li>
+                                 <li>Kyoto to Nara round trip</li>
+                                 <li>Kyoto to Tokyo return journey</li>
+                             </ul>
+                         </li>
+                         <li>Consider purchasing IC card (Suica/Pasmo) for local transit in cities</li>
+                     </ul>
+                `;
+                documentHeader.classList.add('visible');
+                documentContent.classList.add('visible');
+                // Show copy button when content is ready
+                document.getElementById('copy-content').style.display = 'inline-block';
+                rightPanel.scrollTop = 0;
+            }
+        }
+
+        // Function to create typing effect - faster speed
+        function typeText(element, text, index, speed) {
+            // Speed up typing effect by typing 3 characters at a time
+            const charsPerStep = 3;
+            if (index < text.length) {
+                const nextIndex = Math.min(index + charsPerStep, text.length);
+                element.textContent = text.substring(0, nextIndex);
+                setTimeout(() => {
+                    typeText(element, text, nextIndex, speed);
+                }, speed);
+            } else {
+                element.classList.remove('typing-effect');
+            }
+        }
+        
+        // Function to calculate typing speed needed to complete in given duration
+        function calculateTypingSpeed(text, duration) {
+            return duration / text.length;
+        }
+        
+        // Function to process details one by one
+        function processDetailsSequentially(stepDiv, details, currentDetailIndex) {
+            if (currentDetailIndex >= details.length) {
+                // All details for this task have been processed
+                // Wait only 0.2 seconds before allowing next task to start
+                setTimeout(() => {
+                    isProcessingTask = false; // Reset flag to allow next task to process
+                    displayNextStep(); // Call to process next task
+                }, 200);
+                return;
+            }
+            
+            const detailsContainer = stepDiv.querySelector('.task-details-container');
+            const detailDivs = detailsContainer.querySelectorAll('.task-details');
+            
+            if (currentDetailIndex > 0) {
+                // Make current detail visible
+                detailDivs[currentDetailIndex].style.opacity = '1';
+                
+                // Get the text span and start typing
+                const textSpan = detailDivs[currentDetailIndex].querySelector('span');
+                const typingSpeed = calculateTypingSpeed(details[currentDetailIndex].text, 500);
+                typeText(textSpan, details[currentDetailIndex].text, 0, typingSpeed);
+            }
+            
+            // Schedule the next detail to be processed after 0.5 seconds
+            setTimeout(() => {
+                processDetailsSequentially(stepDiv, details, currentDetailIndex + 1);
+            }, 500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize images and website display
+            dynamicImage.src = japanImageUrls[0];
+            dynamicImage2.src = japanImageUrls2[0];
+            const initialWebsiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
+            websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[initialWebsiteIndex]}`;
+            setTimeout(displayNextStep, 500);
+
+            // Add event listeners for document controls
+            const documentControls = document.querySelector('.document-controls');
+            const navIcons = documentControls.querySelectorAll('.nav-icon');
+            
+            // Close button (last icon)
+            navIcons[navIcons.length - 1].addEventListener('click', () => {
+                documentHeader.classList.remove('visible');
+                documentContent.classList.remove('visible');
+                dynamicImage.classList.remove('hidden');
+                dynamicImage2.classList.remove('hidden');
+                websiteDisplay.classList.remove('hidden');
+            });
+
+            // Close panel button
+            const togglePanelBtn = document.getElementById('toggle-panel');
+            const mainContent = document.querySelector('.main-content');
+            const rightPanel = document.getElementById('right-panel');
+            const leftPanel = document.getElementById('left-panel');
+            
+            // Variable to track panel state
+            let rightPanelVisible = true;
+            
+            togglePanelBtn.addEventListener('click', () => {
+                if (rightPanelVisible) {
+                    // Hide right panel with improved transitions
+                    rightPanel.classList.add('hidden');
+                    // Apply grid change immediately but wait for panel animation
+                    setTimeout(() => {
+                        mainContent.classList.add('right-panel-hidden');
+                        leftPanel.classList.add('centered');
+                    }, 10);
+                    togglePanelBtn.classList.remove('close-panel-icon');
+                    togglePanelBtn.classList.add('open-panel-icon');
+                } else {
+                    // Show right panel with improved transitions
+                    // Remove hidden class first to prepare for animation
+                    mainContent.classList.remove('right-panel-hidden');
+                    // Force reflow to ensure the transition works
+                    rightPanel.offsetHeight;
+                    rightPanel.classList.remove('hidden');
+                    // Then apply other changes
+                    leftPanel.classList.remove('centered');
+                    togglePanelBtn.classList.remove('open-panel-icon');
+                    togglePanelBtn.classList.add('close-panel-icon');
+                }
+                // Toggle state
+                rightPanelVisible = !rightPanelVisible;
+            });
+            
+            // Initialize the toggle button with close icon class
+            togglePanelBtn.classList.add('close-panel-icon');
+
+            // Maximize button (second icon)
+            navIcons[1].addEventListener('click', () => {
+                rightPanel.classList.toggle('maximized');
+                if (rightPanel.classList.contains('maximized')) {
+                    leftPanel.style.display = 'none';
+                } else {
+                    leftPanel.style.display = 'block';
+                }
+            });
+
+            // Copy button in document controls
+            const copyBtn = document.getElementById('copy-content');
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = documentContent.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Show feedback
+                    const feedback = document.createElement('div');
+                    feedback.textContent = 'Copied to clipboard!';
+                    feedback.style.position = 'fixed';
+                    feedback.style.top = '20px';
+                    feedback.style.right = '20px';
+                    feedback.style.backgroundColor = 'var(--accent-green)';
+                    feedback.style.color = 'var(--bg-primary)';
+                    feedback.style.padding = '10px 20px';
+                    feedback.style.borderRadius = '4px';
+                    feedback.style.zIndex = '1000';
+                    document.body.appendChild(feedback);
+                    setTimeout(() => feedback.remove(), 2000);
+                });
+            });
+
+            // Watch again button
+            document.querySelector('.watch-button').addEventListener('click', () => {
+                // Reset state
+                taskSection.innerHTML = '';
+                finalSummary.classList.remove('visible');
+                replayCompleted.classList.remove('visible');
+                currentStepIndex = 0;
+                previousStepElement = null;
+                
+                // Hide document content
+                documentHeader.classList.remove('visible');
+                documentContent.classList.remove('visible');
+                dynamicImage.classList.remove('hidden');
+                dynamicImage2.classList.remove('hidden');
+                websiteDisplay.classList.remove('hidden');
+                
+                // Restart animation
+                setTimeout(displayNextStep, 500);
+            });
+
+            // Add zoom functionality
+            let currentZoom = 100;
+            navIcons[0].addEventListener('click', () => {
+                currentZoom = Math.min(currentZoom + 25, 200);
+                documentContent.style.transform = `scale(${currentZoom / 100})`;
+                documentContent.style.transformOrigin = 'top left';
+            });
+
+            navIcons[2].addEventListener('click', () => {
+                currentZoom = Math.max(currentZoom - 25, 50);
+                documentContent.style.transform = `scale(${currentZoom / 100})`;
+                documentContent.style.transformOrigin = 'top left';
+            });
+
+            // Add task progress collapse functionality
+            const taskProgress = document.getElementById('task-progress');
+            const taskProgressHeader = document.getElementById('task-progress-header');
+
+            taskProgressHeader.addEventListener('click', () => {
+                taskProgress.classList.toggle('collapsed');
+            });
+
+            // Start with task progress expanded
+            taskProgress.classList.remove('collapsed');
+
+            // Add task replay collapse functionality
+            const taskReplayCompleted = document.getElementById('task-replay-completed');
+            const taskReplayHeader = document.getElementById('task-replay-header');
+
+            // Add listener to the container, check target
+            taskReplayCompleted.addEventListener('click', (event) => {
+                // Check if the click happened on the header or its direct children
+                if (taskReplayHeader.contains(event.target)) {
+                    taskReplayCompleted.classList.toggle('collapsed');
+                }
+            });
+
+            // Start with task replay expanded (or collapsed if you prefer)
+            taskReplayCompleted.classList.remove('collapsed'); 
+        });
+
+        // Add CSS for maximized state
+        const style = document.createElement('style');
+        style.textContent = `
+            .right-panel.maximized {
+                grid-column: 1 / -1;
+                width: 100%;
+                max-width: 100%;
+            }
+            @media (max-width: 1024px) {
+                .right-panel.maximized {
+                    margin-top: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
