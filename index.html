@@ -190,7 +190,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.75rem; /* Removed invalid 'z' */
             font-weight: bold;
         }
 
@@ -236,7 +236,7 @@
             z-index: 2;
         }
 
-        .task-step:not(:last-child)::after {
+        .task-step:not(:last-child::after) {
             content: '';
             position: absolute;
             left: 5px;
@@ -313,7 +313,7 @@
         }
 
         .search-icon {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 and 5.34-1.48l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
         }
 
         .browse-icon {
@@ -475,57 +475,59 @@
              margin-left: 1rem; /* Indent sub-list */
          }
 
+        /* Add Markdown content styles */
+        .document-content h1 {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .document-content h2 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .document-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .document-content strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .document-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .document-content ul li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .document-content em {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .document-content *:last-child {
+            margin-bottom: 0;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
+            .document-header {
+                border-bottom: 1px solid var(--border-color);
+                cursor: pointer; /* Make header clickable */
             }
-            .right-panel {
-                margin-top: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-             .top-nav {
-                 padding: 0.75rem 1rem;
-             }
-             .nav-title {
-                 display: none;
-             }
-             .main-content {
-                 padding: 0.5rem;
-             }
-             .left-panel, .right-panel {
-                 padding: 1rem;
-             }
-         }
-
-        .task-replay-completed {
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            background-color: #383638;
-            border-radius: 6px;
-            margin-top: 1rem;
-            border: 1px solid var(--border-color);
-            opacity: 0;
-            transition: opacity 0.5s ease-in 0.5s;
-            visibility: hidden;
-        }
-
-        .task-replay-completed.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .task-replay-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer; /* Make header clickable */
         }
 
         /* New styles for the content area and collapsed state */
@@ -776,6 +778,24 @@
              font-size: 0.95rem;
         }
 
+        .file-item-button {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            text-align: left;
+            color: inherit;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-item-button:hover {
+            background-color: #353535;
+        }
+
         /* Browser-like elements */
         .browser-window {
             width: 95%;
@@ -793,22 +813,6 @@
             background-color: #2a2d31;
             border-bottom: 1px solid var(--border-color);
         }
-
-        .browser-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-right: 0.5rem;
-        }
-
-        .browser-control {
-            width: 12px;
-            height: 12px;
-  border-radius: 50%;
-        }
-
-        .browser-control.close { background-color: #ff5f56; }
-        .browser-control.minimize { background-color: #ffbd2e; }
-        .browser-control.maximize { background-color: #27c93f; }
 
         .browser-url {
             flex: 1;
@@ -843,8 +847,8 @@
         .browser-content {
             padding: 1rem;
             min-height: 200px;
-  position: relative;
-}
+            position: relative;
+        }
 
         .browser-content img {
             width: 100%;
@@ -855,6 +859,26 @@
 
         .browser-content img:hover {
             transform: scale(1.02);
+        }
+
+        .reference-source {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .reasoning-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
         }
 
         /* Animation enhancements */
@@ -869,8 +893,19 @@
             }
         }
 
+        @keyframes slideInBrowser {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         .browser-window.animate {
-            animation: slideIn 0.5s ease-out forwards;
+            animation: slideInBrowser 0.5s ease-out forwards;
         }
 
         .document-content.animate {
@@ -984,9 +1019,106 @@
             color: #9ba1a6;
             font-size: 0.85rem;
         }
+
+        /* Loading screen styles */
+        #loading-screen {
+            position: fixed;
+            top: 0%; /* Move to top-center */
+            justify-content: flex-start; /* Align content to the top */
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1b1e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .loading-placeholder {
+            width: 80%;
+            height: 20px;
+            background-color: #2f3336;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .loading-placeholder.short {
+            width: 40%;
+        }
+
+        .proposal-popup {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 2rem;
+            overflow-y: auto;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .proposal-popup h1 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+        }
+
+        .proposal-popup .location-card {
+            background: #2d2c2e;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .proposal-popup .location-card h2 {
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .proposal-popup .location-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .proposal-popup .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .proposal-popup .close-button:hover {
+            color: var(--text-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <div id="loading-screen">
+        <div class="loading-placeholder"></div>
+        <div class="loading-placeholder short"></div>
+        <div class="loading-placeholder"></div>
+    </div>
+
     <div class="app-container">
         <nav class="top-nav">
             <div class="nav-left">
@@ -1056,57 +1188,69 @@
                 <div class="file-attachments">
                     <div class="file-list">
                         <div class="file-item">
-                            <div class="file-icon-container">
-                                <div class="file-icon-placeholder text"></div>
-                            </div>
-                            <div class="file-info">
-                                <div class="file-name">7day_itinerary</div>
-                                <div class="file-meta">Text・4.14 KB</div>
-                            </div>
+                            <button class="file-item-button">
+                                <div class="file-icon-container">
+                                    <div class="file-icon-placeholder text"></div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">7day_itinerary</div>
+                                    <div class="file-meta">Text・4.14 KB</div>
+                                </div>
+                            </button>
                         </div>
                         <div class="file-item">
-                            <div class="file-icon-container">
-                                <div class="file-icon-placeholder text"></div>
-                            </div>
-                            <div class="file-info">
-                                <div class="file-name">proposal_locations</div>
-                                <div class="file-meta">Text・6.20 KB</div>
-                            </div>
+                            <button class="file-item-button">
+                                <div class="file-icon-container">
+                                    <div class="file-icon-placeholder text"></div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">proposal_locations</div>
+                                    <div class="file-meta">Text・6.20 KB</div>
+                                </div>
+                            </button>
                         </div>
                         <div class="file-item">
-                            <div class="file-icon-container">
-                                <div class="file-icon-placeholder code"></div>
-                            </div>
-                            <div class="file-info">
-                                <div class="file-name">japan_travel_handbook.html</div>
-                                <div class="file-meta">Code・52.68 KB</div>
-                            </div>
+                            <button class="file-item-button">
+                                <div class="file-icon-container">
+                                    <div class="file-icon-placeholder code"></div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">japan_travel_handbook.html</div>
+                                    <div class="file-meta">Code・52.68 KB</div>
+                                </div>
+                            </button>
                         </div>
                         <div class="file-item">
-                            <div class="file-icon-container">
-                                <div class="file-icon-placeholder text"></div>
-                            </div>
-                            <div class="file-info">
-                                <div class="file-name">todo</div>
-                                <div class="file-meta">Text・1.89 KB</div>
-                            </div>
+                            <button class="file-item-button">
+                                <div class="file-icon-container">
+                                    <div class="file-icon-placeholder text"></div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">todo</div>
+                                    <div class="file-meta">Text・1.89 KB</div>
+                                </div>
+                            </button>
                         </div>
                         <div class="file-item">
-                            <div class="file-icon-container">
-                                <div class="file-icon-placeholder text"></div>
-                            </div>
-                            <div class="file-info">
-                                <div class="file-name">japan_research</div>
-                                <div class="file-meta">Text・3.75 KB</div>
-                            </div>
+                            <button class="file-item-button">
+                                <div class="file-icon-container">
+                                    <div class="file-icon-placeholder text"></div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">japan_research</div>
+                                    <div class="file-meta">Text・3.75 KB</div>
+                                </div>
+                            </button>
                         </div>
-                         <div class="file-item">
-                            <div class="file-icon-container">
-                                <div class="file-icon-placeholder view-all"></div>
-                            </div>
-                            <div class="file-info">
-                                <div class="view-all-files-button" id="view-all-files-btn">View all files in this task</div>
-                            </div>
+                        <div class="file-item">
+                            <button class="file-item-button" id="view-all-files-btn">
+                                <div class="file-icon-container">
+                                    <div class="file-icon-placeholder view-all"></div>
+                                </div>
+                                <div class="file-info">
+                                    <div class="view-all-files-button">View all files in this task</div>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1117,11 +1261,6 @@
             <div class="right-panel" id="right-panel">
                 <div class="browser-window">
                     <div class="browser-header">
-                        <div class="browser-controls">
-                            <div class="browser-control close"></div>
-                            <div class="browser-control minimize"></div>
-                            <div class="browser-control maximize"></div>
-                        </div>
                         <div class="browser-url" data-url="https://japan-travel-guide.com">https://japan-travel-guide.com</div>
                     </div>
                     <div class="browser-content">
@@ -1131,11 +1270,6 @@
 
                 <div class="browser-window">
                     <div class="browser-header">
-                        <div class="browser-controls">
-                            <div class="browser-control close"></div>
-                            <div class="browser-control minimize"></div>
-                            <div class="browser-control maximize"></div>
-                        </div>
                         <div class="browser-url" data-url="https://japan-tourism.jp">https://japan-tourism.jp</div>
                     </div>
                     <div class="browser-content">
@@ -1145,11 +1279,6 @@
 
                 <div class="browser-window">
                     <div class="browser-header">
-                        <div class="browser-controls">
-                            <div class="browser-control close"></div>
-                            <div class="browser-control minimize"></div>
-                            <div class="browser-control maximize"></div>
-                        </div>
                         <div class="browser-url" data-url="https://japan-rail-pass.com">https://japan-rail-pass.com</div>
                     </div>
                     <div class="browser-content">
@@ -1171,6 +1300,7 @@
                  <div class="document-content" id="document-content">
                      <!-- Itinerary will be injected here -->
                  </div>
+                 <div id="reasoning-bar" class="reasoning-bar">Initializing...</div>
             </div>
         </main>
     </div>
@@ -1194,9 +1324,10 @@
         </div>
       </div>
     </div>
-
+    
     <script>
-         const japanImageUrls = [
+        const THINKING_DURATION = 10000; // total thinking time in ms
+        const japanImageUrls = [
             "https://ttgasia.2017.ttgasia.com/wp-content/uploads/sites/2/2023/04/Dotoburi-in-Osaka_640.jpg",
             "https://www.aljazeera.com/wp-content/uploads/2024/07/AFP__20240311__34LB4CK__v1__HighRes__JapanLifestyleTourism-1-1721361890.jpg?resize=1920%2C1440",
             "https://www.thetimes.com/imageserver/image/%2Fmethode%2Ftimes%2Fprod%2Fweb%2Fbin%2Fec6f7cf8-6dbe-4b56-9972-cbf4fbc76462.jpg?crop=1564%2C880%2C318%2C0",
@@ -1280,6 +1411,19 @@
             }
         ];
 
+        // List of external reference sources to include during thinking
+        const referenceSources = [
+            'Reddit: r/JapanTravel – user discussion on best cherry blossom spots',
+            'Quora: "What is the best time to visit Kyoto?" answers roundup',
+            'TravelBlog: Tokyo Cheapo – budget travel tips in Tokyo',
+            'Reddit: r/TravelTips – packing essentials thread',
+            'Quora: "How to use JR Pass efficiently?" Q&A',
+            'Blog: Nomadic Matt – Japan itinerary guide'
+        ];
+
+        // calculate per-task delay after tasks are defined
+        const timePerTask = THINKING_DURATION / processTasks.length;
+
         const taskSection = document.getElementById('task-section');
         const leftPanel = document.getElementById('left-panel');
         const finalSummary = document.getElementById('task-final-summary');
@@ -1290,17 +1434,416 @@
         const documentHeader = document.getElementById('document-header');
         const documentContent = document.getElementById('document-content');
         const rightPanel = document.getElementById('right-panel');
+        const reasoningBar = document.getElementById('reasoning-bar');
         let currentStepIndex = 0;
         let previousStepElement = null;
         let isProcessingTask = false; // Flag to track if a task is currently being processed
 
-        function displayNextStep() {
-            // If we're already processing a task, don't start another one
-            if (isProcessingTask) return;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Loading screen handling
+            const loadingScreen = document.getElementById('loading-screen');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 2000);
+
+            // Initialize images and website display
+            dynamicImage.src = japanImageUrls[0];
+            dynamicImage2.src = japanImageUrls2[0];
+            const initialWebsiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
+            websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[initialWebsiteIndex]}`;
+            setTimeout(displayNextStep, 500);
+
+            // Add event listeners for document controls
+            const documentControls = document.querySelector('.document-controls');
+            const navIcons = documentControls.querySelectorAll('.nav-icon');
             
+            // Close button (last icon)
+            navIcons[navIcons.length - 1].addEventListener('click', () => {
+                documentHeader.classList.remove('visible');
+                documentContent.classList.remove('visible');
+                dynamicImage.classList.remove('hidden');
+                dynamicImage2.classList.remove('hidden');
+                websiteDisplay.classList.remove('hidden');
+            });
+
+            // Close panel button
+            const togglePanelBtn = document.getElementById('toggle-panel');
+            const mainContent = document.querySelector('.main-content');
+            const rightPanel = document.getElementById('right-panel');
+            const leftPanel = document.getElementById('left-panel');
+            
+            // Variable to track panel state
+            let rightPanelVisible = true;
+            
+            togglePanelBtn.addEventListener('click', () => {
+                if (rightPanelVisible) {
+                    // Hide right panel with improved transitions
+                    rightPanel.classList.add('hidden');
+                    // Apply grid change immediately but wait for panel animation
+                    setTimeout(() => {
+                        mainContent.classList.add('right-panel-hidden');
+                        leftPanel.classList.add('centered');
+                    }, 10);
+                    togglePanelBtn.classList.remove('close-panel-icon');
+                    togglePanelBtn.classList.add('open-panel-icon');
+                } else {
+                    // Show right panel with improved transitions
+                    // Remove hidden class first to prepare for animation
+                    mainContent.classList.remove('right-panel-hidden');
+                    // Force reflow to ensure the transition works
+                    rightPanel.offsetHeight;
+                    rightPanel.classList.remove('hidden');
+                    // Then apply other changes
+                    leftPanel.classList.remove('centered');
+                    togglePanelBtn.classList.remove('open-panel-icon');
+                    togglePanelBtn.classList.add('close-panel-icon');
+                }
+                // Toggle state
+                rightPanelVisible = !rightPanelVisible;
+            });
+            
+            // Initialize the toggle button with close icon class
+            togglePanelBtn.classList.add('close-panel-icon');
+
+            // Maximize button (second icon)
+            navIcons[1].addEventListener('click', () => {
+                rightPanel.classList.toggle('maximized');
+                if (rightPanel.classList.contains('maximized')) {
+                    leftPanel.style.display = 'none';
+                } else {
+                    leftPanel.style.display = 'block';
+                }
+            });
+
+            // Copy button in document controls
+            const copyBtn = document.getElementById('copy-content');
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = documentContent.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Show feedback
+                    const feedback = document.createElement('div');
+                    feedback.textContent = 'Copied to clipboard!';
+                    feedback.style.position = 'fixed';
+                    feedback.style.top = '20px';
+                    feedback.style.right = '20px';
+                    feedback.style.backgroundColor = 'var(--accent-green)';
+                    feedback.style.color = 'var(--bg-primary)';
+                    feedback.style.padding = '10px 20px';
+                    feedback.style.borderRadius = '4px';
+                    feedback.style.zIndex = '1000';
+                    document.body.appendChild(feedback);
+                    setTimeout(() => feedback.remove(), 2000);
+                });
+            });
+
+            // Watch again button
+            document.querySelector('.watch-button').addEventListener('click', () => {
+                // Reset state
+                taskSection.innerHTML = '';
+                finalSummary.classList.remove('visible');
+                replayCompleted.classList.remove('visible');
+                currentStepIndex = 0;
+                previousStepElement = null;
+                
+                // Hide document content
+                documentHeader.classList.remove('visible');
+                documentContent.classList.remove('visible');
+                dynamicImage.classList.remove('hidden');
+                dynamicImage2.classList.remove('hidden');
+                websiteDisplay.classList.remove('hidden');
+                
+                // Restart animation
+                setTimeout(displayNextStep, 500);
+            });
+
+            // Add zoom functionality
+            let currentZoom = 100;
+            navIcons[0].addEventListener('click', () => {
+                currentZoom = Math.min(currentZoom + 25, 200);
+                documentContent.style.transform = `scale(${currentZoom / 100})`;
+                documentContent.style.transformOrigin = 'top left';
+            });
+
+            navIcons[2].addEventListener('click', () => {
+                currentZoom = Math.max(currentZoom - 25, 50);
+                documentContent.style.transform = `scale(${currentZoom / 100})`;
+                documentContent.style.transformOrigin = 'top left';
+            });
+
+            // Add task progress collapse functionality
+            const taskProgress = document.getElementById('task-progress');
+            const taskProgressHeader = document.getElementById('task-progress-header');
+
+            taskProgressHeader.addEventListener('click', () => {
+                taskProgress.classList.toggle('collapsed');
+            });
+
+            // Start with task progress expanded
+            taskProgress.classList.remove('collapsed');
+
+            // Add task replay collapse functionality
+            const taskReplayCompleted = document.getElementById('task-replay-completed');
+            const taskReplayHeader = document.getElementById('task-replay-header');
+
+            // Add listener to the container, check target
+            taskReplayCompleted.addEventListener('click', (event) => {
+                // Check if the click happened on the header or its direct children
+                if (taskReplayHeader.contains(event.target)) {
+                    taskReplayCompleted.classList.toggle('collapsed');
+                }
+            });
+
+            // Start with task replay expanded (or collapsed if you prefer)
+            taskReplayCompleted.classList.remove('collapsed'); 
+
+            // Add click handlers for browser URLs
+            const browserUrls = document.querySelectorAll('.browser-url');
+            browserUrls.forEach(url => {
+                url.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const url = url.getAttribute('data-url');
+                    
+                    // Add clicked class for visual feedback
+                    url.classList.add('clicked');
+                    
+                    // Remove clicked class after animation
+                    setTimeout(() => {
+                        url.classList.remove('clicked');
+                    }, 1000);
+
+                    // Update the website display text
+                    const websiteDisplay = url.closest('.browser-window').querySelector('#website-display');
+                    if (websiteDisplay) {
+                        websiteDisplay.textContent = `Browsing: ${url.textContent}`;
+                    }
+
+                    // Update the corresponding image
+                    const image = url.closest('.browser-window').querySelector('img');
+                    if (image) {
+                        const imageUrls = image.id === 'dynamic-image' ? japanImageUrls : japanImageUrls2;
+                        const currentIndex = imageUrls.indexOf(image.src);
+                        const nextIndex = (currentIndex + 1) % imageUrls.length;
+                        image.src = imageUrls[nextIndex];
+                    }
+                });
+            });
+
+            // Modal logic
+            const modalOverlay = document.getElementById('file-modal-overlay');
+            const modalClose = document.getElementById('file-modal-close');
+            const viewAllBtn = document.getElementById('view-all-files-btn');
+            const modalTabs = document.querySelectorAll('.modal-tab');
+
+            viewAllBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('active');
+                renderModalFiles('all');
+                modalTabs.forEach(tab => tab.classList.remove('active'));
+                modalTabs[0].classList.add('active');
+            });
+            modalClose.addEventListener('click', () => {
+                modalOverlay.classList.remove('active');
+            });
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                  modalOverlay.classList.remove('active');
+                }
+            });
+            modalTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    modalTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderModalFiles(tab.getAttribute('data-tab'));
+                });
+            });
+
+            // Add click handler for file buttons
+            document.querySelectorAll('.file-item-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const fileName = this.querySelector('.file-name').textContent.trim();
+                    
+                    if (fileName === 'proposal_locations') {
+                        // Create and show proposal popup
+                        const proposalPopup = document.createElement('div');
+                        proposalPopup.className = 'proposal-popup';
+                        
+                        proposalPopup.innerHTML = `
+                            <button class="close-button">&times;</button>
+                            <h1>Romantic Proposal Locations in Japan (April 2025)</h1>
+                            <p>This guide provides detailed information about three carefully selected proposal locations during cherry blossom season in Japan.</p>
+
+                            <div class="location-card">
+                                <h2>1. Chidorigafuchi Park, Tokyo</h2>
+                                <img class="location-image" src="${japanImageUrls[0]}" alt="Chidorigafuchi Park">
+                                <h3>Description:</h3>
+                                <p>A romantic pedestrian path along the moat of the Imperial Palace, famous for its tunnel of cherry blossoms. The boat ride offers an intimate setting with stunning views of cherry blossoms reflecting on the water.</p>
+                                
+                                <h3>Best Timing:</h3>
+                                <ul>
+                                    <li>Early morning (around sunrise) or late afternoon for best lighting</li>
+                                    <li>Cherry Blossom Peak: Expected late March to early April</li>
+                                    <li>Evening illumination: 6:00 PM to 10:00 PM</li>
+                                </ul>
+
+                                <h3>Tips:</h3>
+                                <ul>
+                                    <li>Book a boat ride (¥800 per 30 minutes)</li>
+                                    <li>Visit on weekdays for fewer crowds</li>
+                                    <li>Consider hiring a local photographer</li>
+                                </ul>
+                            </div>
+
+                            <div class="location-card">
+                                <h2>2. Maruyama Park, Kyoto</h2>
+                                <img class="location-image" src="${japanImageUrls[1]}" alt="Maruyama Park">
+                                <h3>Description:</h3>
+                                <p>Kyoto's most famous cherry blossom viewing spot, centered around a magnificent weeping cherry tree that becomes illuminated in the evenings.</p>
+                                
+                                <h3>Best Timing:</h3>
+                                <ul>
+                                    <li>Early morning (before 8:00 AM) or evening for illumination</li>
+                                    <li>Cherry Blossom Peak: March 30 to April 10</li>
+                                    <li>Evening illumination until midnight</li>
+                                </ul>
+
+                                <h3>Tips:</h3>
+                                <ul>
+                                    <li>Visit early morning for best photos</li>
+                                    <li>Find secluded spots away from main areas</li>
+                                    <li>Reserve a nearby restaurant for celebration</li>
+                                </ul>
+                            </div>
+
+                            <div class="location-card">
+                                <h2>3. Hozugawa River, Arashiyama</h2>
+                                <img class="location-image" src="${japanImageUrls[2]}" alt="Hozugawa River">
+                                <h3>Description:</h3>
+                                <p>A peaceful boat ride through the scenic ravines of Arashiyama, with cherry blossoms lining the riverbanks.</p>
+                                
+                                <h3>Best Timing:</h3>
+                                <ul>
+                                    <li>Morning rides (first departure 9:00 AM)</li>
+                                    <li>Cherry Blossom Peak: late March to early April</li>
+                                    <li>Last departure: 3:30 PM</li>
+                                </ul>
+
+                                <h3>Tips:</h3>
+                                <ul>
+                                    <li>Book in advance (¥4,100 per person)</li>
+                                    <li>2-hour scenic journey</li>
+                                    <li>Consider Sagano Romantic Train as backup</li>
+                                </ul>
+                            </div>
+                        `;
+                        
+                        const rightPanel = document.getElementById('right-panel');
+                        rightPanel.appendChild(proposalPopup);
+                        
+                        // Add close functionality
+                        proposalPopup.querySelector('.close-button').addEventListener('click', () => {
+                            proposalPopup.remove();
+                        });
+                    }
+                });
+            });
+
+            // Skip button functionality
+            document.getElementById('skip-button').addEventListener('click', () => {
+                // Simulate immediate completion of thinking and reasoning process
+                const taskSection = document.getElementById('task-section');
+                const finalSummary = document.getElementById('task-final-summary');
+                const replayCompleted = document.getElementById('task-replay-completed');
+
+                // Clear task section and show final summary
+                taskSection.innerHTML = '';
+                finalSummary.classList.add('visible');
+                replayCompleted.classList.add('visible');
+
+                // Hide dynamic elements
+                document.getElementById('dynamic-image').classList.add('hidden');
+                document.getElementById('dynamic-image-2').classList.add('hidden');
+                document.getElementById('website-display').classList.add('hidden');
+
+                // Show document content
+                const documentHeader = document.getElementById('document-header');
+                const documentContent = document.getElementById('document-content');
+                documentHeader.classList.add('visible');
+                documentContent.classList.add('visible');
+
+                // Scroll to top of right panel
+                document.getElementById('right-panel').scrollTop = 0;
+            });
+
+            // Add click handler for proposal locations
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('.proposal-list li strong, .proposal-list li')) {
+                    // Hide other content
+                    dynamicImage?.classList.add('hidden');
+                    dynamicImage2?.classList.add('hidden');
+                    websiteDisplay?.classList.add('hidden');
+                    
+                    // Create and show proposal popup
+                    const proposalPopup = document.createElement('div');
+                    proposalPopup.className = 'proposal-popup';
+                    
+                    const location = e.target.closest('li').textContent;
+                    const locationName = location.split(':')[0].replace('Proposal Opportunity', '').trim();
+                    
+                    proposalPopup.innerHTML = `
+                        <button class="close-button">&times;</button>
+                        <h1>${locationName}</h1>
+                        <div class="location-card">
+                            <h2>Overview</h2>
+                            <img class="location-image" src="${japanImageUrls[Math.floor(Math.random() * japanImageUrls.length)]}" alt="${locationName}">
+                            <p>${getLocationDescription(locationName)}</p>
+                        </div>
+                        <div class="location-card">
+                            <h2>Best Time</h2>
+                            <p>Early morning or during sunset for the most romantic atmosphere. Cherry blossoms are typically in full bloom in mid-April.</p>
+                        </div>
+                        <div class="location-card">
+                            <h2>Tips</h2>
+                            <ul>
+                                <li>Visit on a weekday for fewer crowds</li>
+                                <li>Consider hiring a local photographer to capture the moment</li>
+                                <li>Check the weather forecast in advance</li>
+                                <li>Have a backup indoor location nearby</li>
+                            </ul>
+                        </div>
+                    `;
+                    
+                    rightPanel.appendChild(proposalPopup);
+                    
+                    // Add close functionality
+                    proposalPopup.querySelector('.close-button').addEventListener('click', () => {
+                        proposalPopup.remove();
+                        // Restore original content
+                        dynamicImage?.classList.remove('hidden');
+                        dynamicImage2?.classList.remove('hidden');
+                        websiteDisplay?.classList.remove('hidden');
+                    });
+                }
+            });
+
+            // Helper function to get location descriptions
+            function getLocationDescription(location) {
+                const descriptions = {
+                    'Chidorigafuchi Park': 'A romantic pedestrian path along the moat of the Imperial Palace, famous for its tunnel of cherry blossoms. The boat ride offers an intimate setting with stunning views of cherry blossoms reflecting on the water.',
+                    'Maruyama Park': 'Kyoto\'s most famous cherry blossom viewing spot, centered around a massive weeping cherry tree that\'s illuminated at night. The evening atmosphere with lanterns creates a magical setting.',
+                    'Hozugawa River': 'A peaceful boat ride through the scenic Arashiyama district, surrounded by mountains and cherry blossoms. The traditional wooden boats and skilled boatmen provide a uniquely Japanese experience.'
+                };
+                return descriptions[location] || 'A beautiful location perfect for a romantic proposal.';
+            }
+        });
+
+        function displayNextStep() {
+            if (isProcessingTask) return;
             if (currentStepIndex < processTasks.length) {
-                isProcessingTask = true; // Set flag to indicate we're processing
+                // update bottom reasoning bar
+                reasoningBar.textContent = `Thinking: Task ${currentStepIndex+1} – ${processTasks[currentStepIndex].title}`;
+                isProcessingTask = true;
                 const task = processTasks[currentStepIndex];
+                const details = [...task.details, {type: 'source', text: `Referencing: ${referenceSources[currentStepIndex % referenceSources.length]}`}];
                 const stepDiv = document.createElement('div');
                 stepDiv.className = 'task-step';
                 
@@ -1315,7 +1858,7 @@
                 detailsContainer.className = 'task-details-container';
                 
                 // Add each detail with typing effect
-                task.details.forEach((detail, detailIndex) => {
+                details.forEach((detail, detailIndex) => {
                     const detailDiv = document.createElement('div');
                     detailDiv.className = 'task-details';
                     
@@ -1334,7 +1877,7 @@
                     // Only show one detail at a time, each completes in 0.5 seconds
                     if (detailIndex === 0) {
                         // Start typing the first detail immediately
-                        const typingSpeed = calculateTypingSpeed(detail.text, 500);
+                        const typingSpeed = calculateTypingSpeed(detail.text, timePerTask);
                         typeText(textSpan, detail.text, 0, typingSpeed);
                     } else {
                         // Hide details that will be shown later
@@ -1368,10 +1911,23 @@
                 const websiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
                 websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[websiteIndex]}`;
 
+                // schedule reference text in right-panel after each task interval
+                // remove old references
+                const allBrowserContents = document.querySelectorAll('.browser-content');
+                allBrowserContents.forEach(c => c.querySelectorAll('.reference-source').forEach(el => el.remove()));
+                const refText = referenceSources[currentStepIndex % referenceSources.length];
+                const target = allBrowserContents[currentStepIndex % allBrowserContents.length];
+                setTimeout(() => {
+                    const refEl = document.createElement('p');
+                    refEl.className = 'reference-source';
+                    refEl.textContent = `Referencing: ${refText}`;
+                    target.appendChild(refEl);
+                }, timePerTask);
+
                 currentStepIndex++;
                 
-                // Process the details one by one, each taking 0.5 seconds
-                processDetailsSequentially(stepDiv, task.details, 0);
+                // Process the combined details and source one by one
+                processDetailsSequentially(stepDiv, details, 0);
             } else {
                 if(previousStepElement) {
                      previousStepElement.classList.remove('active');
@@ -1587,11 +2143,10 @@
         function processDetailsSequentially(stepDiv, details, currentDetailIndex) {
             if (currentDetailIndex >= details.length) {
                 // All details for this task have been processed
-                // Wait only 0.2 seconds before allowing next task to start
                 setTimeout(() => {
-                    isProcessingTask = false; // Reset flag to allow next task to process
-                    displayNextStep(); // Call to process next task
-                }, 200);
+                    isProcessingTask = false;
+                    displayNextStep();
+                }, timePerTask);
                 return;
             }
             
@@ -1604,7 +2159,7 @@
                 
                 // Get the text span and start typing
                 const textSpan = detailDivs[currentDetailIndex].querySelector('span');
-                const typingSpeed = calculateTypingSpeed(details[currentDetailIndex].text, 500);
+                const typingSpeed = calculateTypingSpeed(details[currentDetailIndex].text, timePerTask);
                 typeText(textSpan, details[currentDetailIndex].text, 0, typingSpeed);
             }
             
@@ -1614,272 +2169,148 @@
             }, 500);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize images and website display
-            dynamicImage.src = japanImageUrls[0];
-            dynamicImage2.src = japanImageUrls2[0];
-            const initialWebsiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
-            websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[initialWebsiteIndex]}`;
-            setTimeout(displayNextStep, 500);
+        // Add this function for proposal content display
+        function displayProposalContent() {
+            documentContent.innerHTML = `
+                <h1>Romantic Proposal Locations in Japan (April 2025)</h1>
+                <p>This guide provides detailed information about three carefully selected proposal locations during cherry blossom season in Japan, with specific recommendations for timing, photography considerations, and backup options.</p>
 
-            // Add event listeners for document controls
-            const documentControls = document.querySelector('.document-controls');
-            const navIcons = documentControls.querySelectorAll('.nav-icon');
-            
-            // Close button (last icon)
-            navIcons[navIcons.length - 1].addEventListener('click', () => {
-                documentHeader.classList.remove('visible');
-                documentContent.classList.remove('visible');
-                dynamicImage.classList.remove('hidden');
-                dynamicImage2.classList.remove('hidden');
-                websiteDisplay.classList.remove('hidden');
-            });
+                <h2>1. Chidorigafuchi Park, Tokyo</h2>
+                <h3>Description:</h3>
+                <p>Chidorigafuchi Park is one of Tokyo's most picturesque cherry blossom viewing spots, featuring hundreds of cherry trees lining a moat of the former Edo Castle. The location offers romantic boat rides through a tunnel of cherry blossoms, creating a magical setting for a proposal.</p>
 
-            // Close panel button
-            const togglePanelBtn = document.getElementById('toggle-panel');
-            const mainContent = document.querySelector('.main-content');
-            const rightPanel = document.getElementById('right-panel');
-            const leftPanel = document.getElementById('left-panel');
-            
-            // Variable to track panel state
-            let rightPanelVisible = true;
-            
-            togglePanelBtn.addEventListener('click', () => {
-                if (rightPanelVisible) {
-                    // Hide right panel with improved transitions
-                    rightPanel.classList.add('hidden');
-                    // Apply grid change immediately but wait for panel animation
-                    setTimeout(() => {
-                        mainContent.classList.add('right-panel-hidden');
-                        leftPanel.classList.add('centered');
-                    }, 10);
-                    togglePanelBtn.classList.remove('close-panel-icon');
-                    togglePanelBtn.classList.add('open-panel-icon');
-                } else {
-                    // Show right panel with improved transitions
-                    // Remove hidden class first to prepare for animation
-                    mainContent.classList.remove('right-panel-hidden');
-                    // Force reflow to ensure the transition works
-                    rightPanel.offsetHeight;
-                    rightPanel.classList.remove('hidden');
-                    // Then apply other changes
-                    leftPanel.classList.remove('centered');
-                    togglePanelBtn.classList.remove('open-panel-icon');
-                    togglePanelBtn.classList.add('close-panel-icon');
-                }
-                // Toggle state
-                rightPanelVisible = !rightPanelVisible;
-            });
-            
-            // Initialize the toggle button with close icon class
-            togglePanelBtn.classList.add('close-panel-icon');
+                <h3>Best Timing:</h3>
+                <ul>
+                    <li>Time of Day: Early morning (around sunrise) or late afternoon (1-2 hours before sunset) for the best lighting and fewer crowds</li>
+                    <li>Cherry Blossom Peak: Expected around late March to early April 2025</li>
+                    <li>Illumination Period: Special evening illumination typically runs from late March to early April (around 6:00 PM to 10:00 PM)</li>
+                </ul>
 
-            // Maximize button (second icon)
-            navIcons[1].addEventListener('click', () => {
-                rightPanel.classList.toggle('maximized');
-                if (rightPanel.classList.contains('maximized')) {
-                    leftPanel.style.display = 'none';
-                } else {
-                    leftPanel.style.display = 'block';
-                }
-            });
+                <h3>Photography Considerations:</h3>
+                <ul>
+                    <li>Morning light provides a soft, ethereal quality to photos</li>
+                    <li>Golden hour (late afternoon) creates a warm, romantic glow</li>
+                    <li>Evening illuminations offer a magical atmosphere with lit-up cherry blossoms</li>
+                </ul>
 
-            // Copy button in document controls
-            const copyBtn = document.getElementById('copy-content');
-            copyBtn.addEventListener('click', () => {
-                const textToCopy = documentContent.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    // Show feedback
-                    const feedback = document.createElement('div');
-                    feedback.textContent = 'Copied to clipboard!';
-                    feedback.style.position = 'fixed';
-                    feedback.style.top = '20px';
-                    feedback.style.right = '20px';
-                    feedback.style.backgroundColor = 'var(--accent-green)';
-                    feedback.style.color = 'var(--bg-primary)';
-                    feedback.style.padding = '10px 20px';
-                    feedback.style.borderRadius = '4px';
-                    feedback.style.zIndex = '1000';
-                    document.body.appendChild(feedback);
-                    setTimeout(() => feedback.remove(), 2000);
-                });
-            });
+                <h3>Privacy Level: Moderate</h3>
+                <ul>
+                    <li>While popular, early morning visits can provide relative privacy</li>
+                    <li>Weekdays are less crowded than weekends</li>
+                    <li>The boat ride offers more privacy than the walking paths</li>
+                </ul>
 
-            // Watch again button
-            document.querySelector('.watch-button').addEventListener('click', () => {
-                // Reset state
-                taskSection.innerHTML = '';
-                finalSummary.classList.remove('visible');
-                replayCompleted.classList.remove('visible');
-                currentStepIndex = 0;
-                previousStepElement = null;
-                
-                // Hide document content
-                documentHeader.classList.remove('visible');
-                documentContent.classList.remove('visible');
-                dynamicImage.classList.remove('hidden');
-                dynamicImage2.classList.remove('hidden');
-                websiteDisplay.classList.remove('hidden');
-                
-                // Restart animation
-                setTimeout(displayNextStep, 500);
-            });
+                <h3>Backup Weather Options:</h3>
+                <ul>
+                    <li>If raining: Consider proposing at nearby Imperial Palace East Gardens (covered areas available)</li>
+                    <li>If too crowded: Visit on a weekday morning or consider the nearby Yasukuni Shrine which has beautiful cherry trees but fewer visitors</li>
+                </ul>
 
-            // Add zoom functionality
-            let currentZoom = 100;
-            navIcons[0].addEventListener('click', () => {
-                currentZoom = Math.min(currentZoom + 25, 200);
-                documentContent.style.transform = `scale(${currentZoom / 100})`;
-                documentContent.style.transformOrigin = 'top left';
-            });
+                <h3>Special Notes:</h3>
+                <ul>
+                    <li>Boat rental costs approximately ¥800 per 30 minutes</li>
+                    <li>Boats are available from 9:30 AM to 8:30 PM (last admission at 7:30 PM) during cherry blossom season</li>
+                    <li>Consider hiring a professional photographer who knows the area for candid proposal shots</li>
+                </ul>
 
-            navIcons[2].addEventListener('click', () => {
-                currentZoom = Math.max(currentZoom - 25, 50);
-                documentContent.style.transform = `scale(${currentZoom / 100})`;
-                documentContent.style.transformOrigin = 'top left';
-            });
+                <h2>2. Maruyama Park, Kyoto</h2>
+                <h3>Description:</h3>
+                <p>Maruyama Park is Kyoto's most famous cherry blossom viewing spot, centered around a magnificent weeping cherry tree (shidarezakura) that becomes illuminated in the evenings. The park offers a traditional Japanese garden setting with ponds and pathways.</p>
 
-            // Add task progress collapse functionality
-            const taskProgress = document.getElementById('task-progress');
-            const taskProgressHeader = document.getElementById('task-progress-header');
+                <h3>Best Timing:</h3>
+                <ul>
+                    <li>Time of Day: Early morning (before 8:00 AM) for fewer crowds or evening for illuminated views</li>
+                    <li>Cherry Blossom Peak: Expected around March 30 to April 10, 2025</li>
+                    <li>Illumination Period: Typically from sunset until midnight during peak bloom</li>
+                </ul>
 
-            taskProgressHeader.addEventListener('click', () => {
-                taskProgress.classList.toggle('collapsed');
-            });
+                <h3>Photography Considerations:</h3>
+                <ul>
+                    <li>The iconic weeping cherry tree makes for a stunning backdrop</li>
+                    <li>Evening illuminations create a romantic, magical atmosphere</li>
+                    <li>Morning light offers clearer photos with fewer people in the background</li>
+                </ul>
 
-            // Start with task progress expanded
-            taskProgress.classList.remove('collapsed');
+                <h3>Privacy Level: Low to Moderate</h3>
+                <ul>
+                    <li>Very popular during peak season</li>
+                    <li>Early morning visits (before 7:00 AM) offer the most privacy</li>
+                    <li>The park has various secluded corners away from the main weeping cherry tree</li>
+                </ul>
 
-            // Add task replay collapse functionality
-            const taskReplayCompleted = document.getElementById('task-replay-completed');
-            const taskReplayHeader = document.getElementById('task-replay-header');
+                <h3>Backup Weather Options:</h3>
+                <ul>
+                    <li>If raining: Nearby Yasaka Shrine has covered areas with cherry trees</li>
+                    <li>If too crowded: Consider the quieter Kyoto Gyoen National Garden or Kamogawa River banks</li>
+                </ul>
 
-            // Add listener to the container, check target
-            taskReplayCompleted.addEventListener('click', (event) => {
-                // Check if the click happened on the header or its direct children
-                if (taskReplayHeader.contains(event.target)) {
-                    taskReplayCompleted.classList.toggle('collapsed');
-                }
-            });
+                <h3>Special Notes:</h3>
+                <ul>
+                    <li>The weeping cherry tree tends to bloom earlier than other varieties</li>
+                    <li>Evening illumination creates an especially romantic atmosphere</li>
+                    <li>Food stalls and vendors are available in the park during cherry blossom season</li>
+                    <li>Consider reserving a nearby traditional restaurant for a celebratory meal after the proposal</li>
+                </ul>
 
-            // Start with task replay expanded (or collapsed if you prefer)
-            taskReplayCompleted.classList.remove('collapsed'); 
+                <h2>3. Hozugawa River, Arashiyama</h2>
+                <h3>Description:</h3>
+                <p>The Hozugawa River boat ride offers a unique proposal setting as you float through the scenic ravines of Arashiyama. During cherry blossom season, the riverbanks are lined with blooming trees, creating a natural, romantic backdrop away from the crowds.</p>
 
-            // Add click handlers for browser URLs
-            const browserUrls = document.querySelectorAll('.browser-url');
-            browserUrls.forEach(url => {
-                url.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const url = url.getAttribute('data-url');
-                    
-                    // Add clicked class for visual feedback
-                    url.classList.add('clicked');
-                    
-                    // Remove clicked class after animation
-                    setTimeout(() => {
-                        url.classList.remove('clicked');
-                    }, 1000);
+                <h3>Best Timing:</h3>
+                <ul>
+                    <li>Time of Day: Morning boat rides (first departure around 9:00 AM) for best lighting and calmer water</li>
+                    <li>Cherry Blossom Peak: Expected around late March to early April 2025</li>
+                    <li>Boat Schedule: Typically operates from 9:00 AM to 3:30 PM (last departure)</li>
+                </ul>
 
-                    // Update the website display text
-                    const websiteDisplay = url.closest('.browser-window').querySelector('#website-display');
-                    if (websiteDisplay) {
-                        websiteDisplay.textContent = `Browsing: ${url.textContent}`;
-                    }
+                <h3>Photography Considerations:</h3>
+                <ul>
+                    <li>The boat ride provides unique perspectives of cherry blossoms from the water</li>
+                    <li>Natural lighting on the river creates beautiful reflections</li>
+                    <li>Consider hiring a photographer to wait at a scenic point or arrange with boat staff in advance</li>
+                </ul>
 
-                    // Update the corresponding image
-                    const image = url.closest('.browser-window').querySelector('img');
-                    if (image) {
-                        const imageUrls = image.id === 'dynamic-image' ? japanImageUrls : japanImageUrls2;
-                        const currentIndex = imageUrls.indexOf(image.src);
-                        const nextIndex = (currentIndex + 1) % imageUrls.length;
-                        image.src = imageUrls[nextIndex];
-                    }
-                });
-            });
+                <h3>Privacy Level: High</h3>
+                <ul>
+                    <li>Private experience on the boat</li>
+                    <li>The 16km journey provides multiple scenic spots for proposing</li>
+                    <li>Other passengers will be present but focused on the scenery</li>
+                </ul>
 
-            // Modal logic
-            const modalOverlay = document.getElementById('file-modal-overlay');
-            const modalClose = document.getElementById('file-modal-close');
-            const viewAllBtn = document.getElementById('view-all-files-btn');
-            const modalTabs = document.querySelectorAll('.modal-tab');
+                <h3>Backup Weather Options:</h3>
+                <ul>
+                    <li>If boat rides are canceled: The nearby Sagano Romantic Train offers covered viewing of similar scenery</li>
+                    <li>If weather is poor: Consider the indoor spaces at Arashiyama's temples or a traditional ryokan with garden views</li>
+                </ul>
 
-            viewAllBtn.addEventListener('click', () => {
-                modalOverlay.classList.add('active');
-                renderModalFiles('all');
-                modalTabs.forEach(tab => tab.classList.remove('active'));
-                modalTabs[0].classList.add('active');
-            });
-            modalClose.addEventListener('click', () => {
-                modalOverlay.classList.remove('active');
-            });
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                  modalOverlay.classList.remove('active');
-                }
-            });
-            modalTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    modalTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    renderModalFiles(tab.getAttribute('data-tab'));
-                });
-            });
-        });
+                <h3>Special Notes:</h3>
+                <ul>
+                    <li>Boat ride costs approximately ¥4,100 per person</li>
+                    <li>The full ride takes about 2 hours from Kameoka to Arashiyama</li>
+                    <li>Reservations are highly recommended during cherry blossom season</li>
+                    <li>The boat ride may be canceled due to high water or bad weather (refunds are typically provided)</li>
+                    <li>Consider combining with the Sagano Romantic Train for a full day experience</li>
+                </ul>
 
-        // Add CSS for maximized state
-        const style = document.createElement('style');
-        style.textContent = `
-            .right-panel.maximized {
-                grid-column: 1 / -1;
-                width: 100%;
-                max-width: 100%;
-            }
-            @media (max-width: 1024px) {
-                .right-panel.maximized {
-                    margin-top: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+                <h2>General Proposal Tips</h2>
+                <ul>
+                    <li>Weather Contingency: Always have an indoor backup plan during cherry blossom season as spring weather can be unpredictable</li>
+                    <li>Timing Flexibility: Build 2-3 days of flexibility into your itinerary for the proposal, as cherry blossom peaks can vary</li>
+                    <li>Professional Help: Consider hiring a local photographer familiar with the location for candid proposal photos</li>
+                    <li>Ring Security: Keep the ring secure but accessible; consider a pocket with a zipper</li>
+                    <li>Post-Proposal Celebration: Research and reserve a special restaurant near your chosen proposal spot</li>
+                    <li>Local Assistance: Hotel concierges can often help with proposal arrangements and recommendations</li>
+                    <li>Privacy Considerations: For more privacy, consider proposing during a weekday rather than weekend</li>
+                </ul>
 
-        // Modal dummy file data
-        const dummyFiles = [
-          { name: 'japan_handbook.html', type: 'Code', size: '52.68 KB', icon: 'code' },
-          { name: 'todo', type: 'Text', size: '1.89 KB', icon: 'text' },
-          { name: 'japan_research', type: 'Text', size: '3.75 KB', icon: 'text' },
-          { name: '7day_itinerary', type: 'Text', size: '4.14 KB', icon: 'text' },
-          { name: 'proposal_locations', type: 'Text', size: '6.20 KB', icon: 'text' },
-          { name: 'japanese_phrases_and_tips', type: 'Text', size: '2.10 KB', icon: 'text' },
-          { name: 'japan_travel_handbook.html', type: 'Code', size: '52.68 KB', icon: 'code' },
-        ];
-
-        const fileIcons = {
-          text: `<svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="4" fill="#2b95d6"/><path d="M6 4h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 0v12m8-12v12" stroke="#fff" stroke-width="1.5"/></svg>`,
-          code: `<svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="4" fill="#2b95d6"/><path d="M7 13l-2-3 2-3m6 6l2-3-2-3" stroke="#fff" stroke-width="1.5"/></svg>`
-        };
-
-        function renderModalFiles(tab = 'all') {
-          const list = document.getElementById('modal-file-list');
-          list.innerHTML = '';
-          let files = dummyFiles;
-          if (tab === 'documents') files = dummyFiles.filter(f => f.type === 'Text');
-          if (tab === 'code') files = dummyFiles.filter(f => f.type === 'Code');
-          if (tab === 'images') files = []; // No images in dummy
-          if (tab === 'links') files = []; // No links in dummy
-          if (files.length === 0) {
-            list.innerHTML = '<div style="color:#9ba1a6;padding:2rem 0;text-align:center;">No files found.</div>';
-            return;
-          }
-          files.forEach(f => {
-            const item = document.createElement('div');
-            item.className = 'modal-file-item';
-            item.innerHTML = `<div class="modal-file-icon">${fileIcons[f.icon]}</div>
-              <div class="modal-file-info">
-                <div class="modal-file-name">${f.name}</div>
-                <div class="modal-file-meta">${f.type}・${f.size}</div>
-              </div>`;
-            list.appendChild(item);
-          });
+                <h2>Cherry Blossom Forecast for April 2025</h2>
+                <ul>
+                    <li>Tokyo: Peak bloom expected from March 25 to April 5, 2025</li>
+                    <li>Kyoto: Peak bloom expected from March 30 to April 10, 2025</li>
+                    <li>Arashiyama: Similar to Kyoto's forecast, with potential for slightly earlier blooming</li>
+                </ul>
+                <p><em>Note: Cherry blossom forecasts are updated regularly starting in January of each year. Check the latest forecast closer to your travel date.</em></p>
+            `;
         }
     </script>
 </body>
