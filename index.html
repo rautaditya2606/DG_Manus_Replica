@@ -226,7 +226,7 @@
         .task-step::before {
             content: '';
             position: absolute;
-            left: 0;
+  left: 0;
             top: 5px;
             width: 10px;
             height: 10px;
@@ -651,7 +651,7 @@
 
         .right-panel.maximized {
             grid-column: 1 / -1;
-            width: 100%;
+  width: 100%;
             max-width: 100%;
         }
         @media (max-width: 1024px) {
@@ -672,9 +672,9 @@
         }
 
         .document-corner-controls {
-            position: absolute;
+  position: absolute;
             top: 0;
-            right: 0;
+  right: 0;
             display: flex;
             gap: 0.5rem;
         }
@@ -774,6 +774,215 @@
          .view-all-files-button {
              color: var(--text-secondary);
              font-size: 0.95rem;
+        }
+
+        /* Browser-like elements */
+        .browser-window {
+            width: 95%;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .browser-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #2a2d31;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .browser-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .browser-control {
+            width: 12px;
+            height: 12px;
+  border-radius: 50%;
+        }
+
+        .browser-control.close { background-color: #ff5f56; }
+        .browser-control.minimize { background-color: #ffbd2e; }
+        .browser-control.maximize { background-color: #27c93f; }
+
+        .browser-url {
+            flex: 1;
+            background-color: #1a1b1e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            white-space: nowrap;
+  overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .browser-url:hover {
+            background-color: #2a2d31;
+            color: var(--text-primary);
+        }
+
+        .browser-url.clicked {
+            background-color: var(--accent-blue);
+            color: var(--bg-primary);
+        }
+
+        .browser-url.clicked::after {
+            content: '✓';
+            margin-left: 0.5rem;
+            color: var(--accent-green);
+        }
+
+        .browser-content {
+            padding: 1rem;
+            min-height: 200px;
+  position: relative;
+}
+
+        .browser-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .browser-content img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Animation enhancements */
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .browser-window.animate {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        .document-content.animate {
+            animation: slideIn 0.5s ease-out 0.2s forwards;
+        }
+
+        /* Modal styles for file list */
+        .modal-overlay {
+  position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #232325;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            width: 480px;
+            max-width: 95vw;
+            max-height: 90vh;
+            padding: 0 0 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: slideIn 0.3s cubic-bezier(.4,0,.2,1);
+        }
+        .modal-header {
+            padding: 1.25rem 1.5rem 0.5rem 1.5rem;
+            font-size: 1.2rem;
+            color: #dbdbda;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #9ba1a6;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: #fff;
+        }
+        .modal-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 1.5rem 0.5rem 1.5rem;
+        }
+        .modal-tab {
+            background: none;
+            border: none;
+            color: #9ba1a6;
+            font-size: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .modal-tab.active {
+            background: #353535;
+            color: #dbdbda;
+        }
+        .modal-file-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .modal-file-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #2f3336;
+        }
+        .modal-file-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #2b95d6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .modal-file-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+  overflow: hidden;
+}
+        .modal-file-name {
+            color: #dbdbda;
+            font-weight: 500;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .modal-file-meta {
+            color: #9ba1a6;
+            font-size: 0.85rem;
         }
     </style>
 </head>
@@ -896,7 +1105,7 @@
                                 <div class="file-icon-placeholder view-all"></div>
                             </div>
                             <div class="file-info">
-                                <div class="view-all-files-button">View all files in this task</div>
+                                <div class="view-all-files-button" id="view-all-files-btn">View all files in this task</div>
                             </div>
                         </div>
                     </div>
@@ -906,11 +1115,49 @@
             </div>
 
             <div class="right-panel" id="right-panel">
-                 <img id="dynamic-image" src="" alt="Japan Scene 1">
-                 <p id="website-display">Browsing...</p>
-                 <img id="dynamic-image-2" src="" alt="Japan Scene 2">
-                 <!-- Original document content - initially hidden -->
-                 <div class="document-header" id="document-header">
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="browser-controls">
+                            <div class="browser-control close"></div>
+                            <div class="browser-control minimize"></div>
+                            <div class="browser-control maximize"></div>
+                        </div>
+                        <div class="browser-url" data-url="https://japan-travel-guide.com">https://japan-travel-guide.com</div>
+                    </div>
+                    <div class="browser-content">
+                        <img id="dynamic-image" src="" alt="Japan Scene 1">
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="browser-controls">
+                            <div class="browser-control close"></div>
+                            <div class="browser-control minimize"></div>
+                            <div class="browser-control maximize"></div>
+                        </div>
+                        <div class="browser-url" data-url="https://japan-tourism.jp">https://japan-tourism.jp</div>
+                    </div>
+                    <div class="browser-content">
+                        <img id="dynamic-image-2" src="" alt="Japan Scene 2">
+                    </div>
+                </div>
+
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="browser-controls">
+                            <div class="browser-control close"></div>
+                            <div class="browser-control minimize"></div>
+                            <div class="browser-control maximize"></div>
+                        </div>
+                        <div class="browser-url" data-url="https://japan-rail-pass.com">https://japan-rail-pass.com</div>
+                    </div>
+                    <div class="browser-content">
+                        <p id="website-display">Loading travel information...</p>
+                    </div>
+                </div>
+
+                <div class="document-header" id="document-header">
                       <div class="document-title">
                           <span class="doc-icon"></span> 7day_itinerary
                       </div>
@@ -926,6 +1173,26 @@
                  </div>
             </div>
         </main>
+    </div>
+
+    <!-- Modal for all files in this task -->
+    <div class="modal-overlay" id="file-modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          All files in this task
+          <button class="modal-close" id="file-modal-close" title="Close">&times;</button>
+        </div>
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="all">All</button>
+          <button class="modal-tab" data-tab="documents">Documents</button>
+          <button class="modal-tab" data-tab="images">Images</button>
+          <button class="modal-tab" data-tab="code">Code files</button>
+          <button class="modal-tab" data-tab="links">Links</button>
+        </div>
+        <div class="modal-file-list" id="modal-file-list">
+          <!-- Files will be injected here -->
+        </div>
+      </div>
     </div>
 
     <script>
@@ -1281,6 +1548,19 @@
                 document.getElementById('copy-content').style.display = 'inline-block';
                 rightPanel.scrollTop = 0;
             }
+
+            // Add animation classes
+            const browserWindows = document.querySelectorAll('.browser-window');
+            browserWindows.forEach((window, index) => {
+                setTimeout(() => {
+                    window.classList.add('animate');
+                }, index * 100);
+            });
+
+            // Animate document content
+            setTimeout(() => {
+                documentContent.classList.add('animate');
+            }, browserWindows.length * 100);
         }
 
         // Function to create typing effect - faster speed
@@ -1484,6 +1764,66 @@
 
             // Start with task replay expanded (or collapsed if you prefer)
             taskReplayCompleted.classList.remove('collapsed'); 
+
+            // Add click handlers for browser URLs
+            const browserUrls = document.querySelectorAll('.browser-url');
+            browserUrls.forEach(url => {
+                url.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const url = url.getAttribute('data-url');
+                    
+                    // Add clicked class for visual feedback
+                    url.classList.add('clicked');
+                    
+                    // Remove clicked class after animation
+                    setTimeout(() => {
+                        url.classList.remove('clicked');
+                    }, 1000);
+
+                    // Update the website display text
+                    const websiteDisplay = url.closest('.browser-window').querySelector('#website-display');
+                    if (websiteDisplay) {
+                        websiteDisplay.textContent = `Browsing: ${url.textContent}`;
+                    }
+
+                    // Update the corresponding image
+                    const image = url.closest('.browser-window').querySelector('img');
+                    if (image) {
+                        const imageUrls = image.id === 'dynamic-image' ? japanImageUrls : japanImageUrls2;
+                        const currentIndex = imageUrls.indexOf(image.src);
+                        const nextIndex = (currentIndex + 1) % imageUrls.length;
+                        image.src = imageUrls[nextIndex];
+                    }
+                });
+            });
+
+            // Modal logic
+            const modalOverlay = document.getElementById('file-modal-overlay');
+            const modalClose = document.getElementById('file-modal-close');
+            const viewAllBtn = document.getElementById('view-all-files-btn');
+            const modalTabs = document.querySelectorAll('.modal-tab');
+
+            viewAllBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('active');
+                renderModalFiles('all');
+                modalTabs.forEach(tab => tab.classList.remove('active'));
+                modalTabs[0].classList.add('active');
+            });
+            modalClose.addEventListener('click', () => {
+                modalOverlay.classList.remove('active');
+            });
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                  modalOverlay.classList.remove('active');
+                }
+            });
+            modalTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    modalTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderModalFiles(tab.getAttribute('data-tab'));
+                });
+            });
         });
 
         // Add CSS for maximized state
@@ -1501,6 +1841,46 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Modal dummy file data
+        const dummyFiles = [
+          { name: 'japan_handbook.html', type: 'Code', size: '52.68 KB', icon: 'code' },
+          { name: 'todo', type: 'Text', size: '1.89 KB', icon: 'text' },
+          { name: 'japan_research', type: 'Text', size: '3.75 KB', icon: 'text' },
+          { name: '7day_itinerary', type: 'Text', size: '4.14 KB', icon: 'text' },
+          { name: 'proposal_locations', type: 'Text', size: '6.20 KB', icon: 'text' },
+          { name: 'japanese_phrases_and_tips', type: 'Text', size: '2.10 KB', icon: 'text' },
+          { name: 'japan_travel_handbook.html', type: 'Code', size: '52.68 KB', icon: 'code' },
+        ];
+
+        const fileIcons = {
+          text: `<svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="4" fill="#2b95d6"/><path d="M6 4h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 0v12m8-12v12" stroke="#fff" stroke-width="1.5"/></svg>`,
+          code: `<svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="4" fill="#2b95d6"/><path d="M7 13l-2-3 2-3m6 6l2-3-2-3" stroke="#fff" stroke-width="1.5"/></svg>`
+        };
+
+        function renderModalFiles(tab = 'all') {
+          const list = document.getElementById('modal-file-list');
+          list.innerHTML = '';
+          let files = dummyFiles;
+          if (tab === 'documents') files = dummyFiles.filter(f => f.type === 'Text');
+          if (tab === 'code') files = dummyFiles.filter(f => f.type === 'Code');
+          if (tab === 'images') files = []; // No images in dummy
+          if (tab === 'links') files = []; // No links in dummy
+          if (files.length === 0) {
+            list.innerHTML = '<div style="color:#9ba1a6;padding:2rem 0;text-align:center;">No files found.</div>';
+            return;
+          }
+          files.forEach(f => {
+            const item = document.createElement('div');
+            item.className = 'modal-file-item';
+            item.innerHTML = `<div class="modal-file-icon">${fileIcons[f.icon]}</div>
+              <div class="modal-file-info">
+                <div class="modal-file-name">${f.name}</div>
+                <div class="modal-file-meta">${f.type}・${f.size}</div>
+              </div>`;
+            list.appendChild(item);
+          });
+        }
     </script>
 </body>
 </html>
