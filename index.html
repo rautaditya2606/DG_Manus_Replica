@@ -1,1676 +1,2034 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manus AI - Static Japan Itinerary</title>
-    <style>
-        :root {
-            --bg-primary: #1a1b1e;
-            --bg-secondary: #212326;
-            --text-primary: #e5e5e5;
-            --text-secondary: #9ba1a6;
-            --accent-blue: #2b95d6;
-            --accent-green: #3dcc91;
-            --border-color: #2f3336;
-            --hover-bg: #2a2d31;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow: hidden; /* Prevent body scrolling */
-        }
-
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh; /* Full viewport height */
-            overflow: hidden; /* Prevent app container scrolling */
-        }
-
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            background-color: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-icon {
-            /* Placeholder for Manus icon */
-            width: 24px;
-            height: 24px;
-            background-color: var(--accent-blue);
-            border-radius: 4px;
-        }
-
-        .logo-text {
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-
-        .nav-title {
-            color: var(--text-primary);
-            font-size: 1rem;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .nav-icon {
-            /* Placeholder for icons */
-            width: 20px;
-            height: 20px;
-            background-color: var(--text-secondary);
-            cursor: pointer;
-            mask-size: contain;
-            mask-repeat: no-repeat;
-            mask-position: center;
-            -webkit-mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-        }
-
-        .link-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M10.586 13.414a1 1 0 0 1-1.414 1.414A5 5 0 0 1 6.293 9.172l1.414-1.414a1 1 0 1 1 1.414 1.414L8.414 9.879a3 3 0 0 0 4.243 4.242l.707-.707a1 1 0 0 1 1.414 0zm2.828-2.828a1 1 0 0 1 1.414-1.414A5 5 0 0 1 17.707 14.828l-1.414 1.414a1 1 0 1 1-1.414-1.414l.707-.707a3 3 0 0 0-4.243-4.242l-.707.707a1 1 0 0 1-1.414 0z"/></svg>'); }
-        .copy-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>'); }
-        .kebab-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>'); }
-        .close-panel-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>'); }
-        .open-panel-icon { mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>'); }
-
-        .main-content {
-            flex: 1; /* Grow to fill remaining space */
-            display: grid;
-            grid-template-columns: 1.5fr 1fr; /* Swapped column ratio */
-            gap: 1rem;
-            padding: 1rem;
-            overflow: hidden; /* Prevent overall scroll */
-            transition: grid-template-columns 0.5s ease;
-            background-color: #262729;
-        }
-
-        .main-content.right-panel-hidden {
-            grid-template-columns: 1fr;
-        }
-
-        .left-panel, .right-panel {
-            background-color: #262729;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            overflow-y: auto; /* Allow individual column scrolling */
-            padding: 1.5rem;
-            transition: all 0.5s ease;
-            /* Hide scrollbar for WebKit browsers */
-            &::-webkit-scrollbar {
-                display: none;
-            }
-            /* Hide scrollbar for Firefox */
-            scrollbar-width: none;
-            /* Hide scrollbar for IE/Edge (older versions) */
-            -ms-overflow-style: none;
-        }
-
-        .left-panel {
-            transform-origin: center;
-            margin: 0 auto;
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .left-panel.centered {
-            max-width: 800px;
-            transform: translateX(0);
-        }
-
-        .right-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem; /* Reduced gap */
-            padding: 1rem; /* Reduced padding */
-            background-color: #262628; /* Updated background color */
-            /* Keep other styles like border, overflow */
-            overflow-y: auto;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .right-panel.hidden {
-            transform: translateX(50px);
-            opacity: 0;
-        }
-
-        /* Fix for transition lag */
-        .main-content.right-panel-hidden .right-panel {
-            position: absolute;
-            right: -9999px;
-            visibility: hidden;
-        }
-
-        /* Left Panel: Chat/Task Trace */
-        .user-prompt, .ai-response {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-radius: 6px;
-            background-color: #353535;
-            border: 1px solid var(--border-color);
-            white-space: pre-wrap; /* Preserve line breaks */
-        }
-
-        .ai-response {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-radius: 6px;
-            background-color: #262729;
-            border: 1px solid var(--border-color);
-            white-space: pre-wrap; /* Preserve line breaks */
-        }
-
-        .ai-response-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem; /* Removed invalid 'z' */
-            font-weight: bold;
-        }
-
-        .ai-icon { /* Placeholder for Manus icon */
-            width: 20px;
-            height: 20px;
-            background-color: var(--accent-blue);
-            border-radius: 3px;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .task-section {
-            margin-top: 1rem;
-            padding-left: 1rem;
-            position: relative;
-        }
-
-        .task-step {
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-left: 25px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-
-        .task-step.visible {
-             opacity: 1;
-             transform: translateY(0);
-        }
-
-        .task-step::before {
-            content: '';
-            position: absolute;
-  left: 0;
-            top: 5px;
-            width: 10px;
-            height: 10px;
-            background-color: var(--border-color);
-            border-radius: 50%;
-            border: 2px solid var(--bg-secondary);
-            z-index: 2;
-        }
-
-        .task-step:not(:last-child::after) {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 15px;
-            bottom: -1.5rem;
-            width: 2px;
-            background-color: var(--border-color);
-            z-index: 1;
-        }
-
-        .task-step.active::before {
-            background-color: var(--accent-green);
-            border-color: var(--accent-green);
-            box-shadow: 0 0 5px var(--accent-green);
-        }
-
-        .task-step-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-            font-weight: 500;
-        }
-
-        .task-step-header::before {
-             content: none;
-        }
-
-        .task-details {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-left: 0;
-            padding: 0.5rem;
-            background-color: var(--bg-primary);
-            border-radius: 20px;
-            margin-top: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid var(--border-color);
-            white-space: pre-wrap;
-        }
-
-        .typing-effect::after {
-            content: '|';
-            animation: cursor 1s infinite step-end;
-        }
-
-        @keyframes cursor {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .task-icon {
-            width: 16px;
-            height: 16px;
-            background-color: var(--text-secondary);
-            flex-shrink: 0;
-            mask-size: contain;
-            mask-repeat: no-repeat;
-            mask-position: center;
-            -webkit-mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-        }
-
-        .command-icon {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M4 17h16v2H4zm16-9h-2V6h2v2zm-4 0h-2V6h2v2zm-4 0H8V6h2v2z"/></svg>');
-        }
-
-        .file-icon {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>');
-        }
-
-        .search-icon {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 and 5.34-1.48l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
-        }
-
-        .browse-icon {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>');
-        }
-
-        .scroll-icon {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="m12 6-1.41 1.41L13.17 10H4v2h9.17l-2.58 2.59L12 16l6-6-6-6z"/></svg>');
-        }
-
-        .task-final,
-        .task-replay-completed {
-            opacity: 0;
-            transition: opacity 0.5s ease-in 0.5s;
-            visibility: hidden;
-        }
-
-        .task-final.visible,
-        .task-replay-completed.visible {
-             opacity: 1;
-             visibility: visible;
-        }
-
-        .task-final-text {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .task-final-text::before {
-            content: '✔';
-            color: var(--accent-green);
-            font-weight: bold;
-        }
-
-        .watch-button {
-            background-color: var(--text-primary);
-            color: var(--bg-primary);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .progress-bar {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .progress-bar .nav-icon {
-            width: 16px;
-            height: 16px;
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="m7 10 5 5 5-5H7z"/></svg>');
-        }
-
-        /* Right Panel: Document Viewer / Image Viewer */
-        #dynamic-image, #dynamic-image-2 {
-             width: 95%; /* Slightly increase width */
-             max-height: 40%; /* Adjust max height */
-             object-fit: contain;
-             border-radius: 6px;
-             border: 1px solid var(--border-color);
-             background-color: var(--bg-secondary);
-             margin: 0; /* Remove auto margin */
-        }
-
-        #website-display {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            background-color: var(--bg-secondary);
-            padding: 0.5rem 0.75rem;
-            border-radius: 4px;
-            width: 95%;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            border: 1px solid var(--border-color);
-        }
-
-        #dynamic-image.hidden,
-        #dynamic-image-2.hidden,
-        #website-display.hidden {
-             display: none; /* Hide images & website after animation */
-        }
-
-         /* Hide original document content initially and add transition */
-         .document-header,
-         .document-content {
-             display: none; /* Start hidden */
-             opacity: 0;
-             transition: opacity 0.5s ease-in-out;
-         }
-          .document-header.visible,
-          .document-content.visible {
-              display: block; /* Show after animation */
-              opacity: 1; /* Fade in */
-          }
-          /* Ensure header flex is re-applied */
-         .document-header.visible {
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-             padding-bottom: 1rem;
-             margin-bottom: 1rem;
-             border-bottom: 1px solid var(--border-color);
-         }
-
-
-        /* Restore document content styles */
-        .document-content h3 {
-            color: var(--text-primary);
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            font-size: 1.2rem;
-        }
-        .document-content h4 {
-            color: var(--text-primary); /* Adjusted color for dark mode */
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        .document-content ul {
-            list-style: disc;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .document-content li {
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-         .document-content p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-         }
-         .document-content .time-block {
-            color: var(--text-primary);
-            font-weight: 500;
-         }
-         .document-content .proposal-list li,
-         .document-content .transport-list li {
-            color: var(--text-primary);
-         }
-          .document-content .proposal-list strong {
-              color: var(--accent-green);
-          }
-         .document-content .transport-list ul {
-             margin-top: 0.5rem;
-             margin-bottom: 0; /* Remove extra bottom margin */
-         }
-         .document-content .transport-list ul li{
-             color: var(--text-secondary);
-             list-style-type: circle;
-             margin-left: 1rem; /* Indent sub-list */
-         }
-
-        /* Add Markdown content styles */
-        .document-content h1 {
-            color: var(--text-primary);
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-
-        .document-content h2 {
-            color: var(--text-primary);
-            font-size: 1.4rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .document-content p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .document-content strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .document-content ul {
-            margin-bottom: 1.5rem;
-            padding-left: 1.5rem;
-        }
-
-        .document-content ul li {
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
-        }
-
-        .document-content em {
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .document-content *:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .document-header {
-                border-bottom: 1px solid var(--border-color);
-                cursor: pointer; /* Make header clickable */
-            }
-        }
-
-        /* New styles for the content area and collapsed state */
-        .task-replay-content {
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
-            max-height: 1000px; /* Set a large max-height for expanded state */
-        }
-
-        .task-replay-completed.collapsed .task-replay-content {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            border-top: none; /* Optional: Hide border when collapsed */
-        }
-
-        /* Rotate collapse icon when collapsed */
-        .task-replay-completed.collapsed .task-replay-header .collapse-icon {
-            transform: rotate(180deg);
-        }
-
-        .computer-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .computer-icon {
-            width: 24px;
-            height: 24px;
-            background-color: var(--text-secondary);
-            border-radius: 4px;
-        }
-
-        .computer-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .computer-name {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .computer-status {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .editor-icon {
-            width: 16px;
-            height: 16px;
-            background-color: var(--text-secondary);
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .task-progress {
-            margin-top: 1rem;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .task-progress.collapsed {
-            max-height: 0;
-        }
-
-        .task-progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-        }
-
-        .task-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            background: #2d2c2e;
-            border-radius: 4px;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-
-        .task-item.completed {
-            color: var(--text-primary);
-        }
-
-        .task-item.completed::before {
-            content: '✓';
-            color: var(--accent-green);
-        }
-
-        .collapse-icon {
-            width: 20px;
-            height: 20px;
-            background-color: var(--text-secondary);
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>');
-            mask-repeat: no-repeat;
-            mask-position: center;
-            transition: transform 0.3s ease;
-        }
-
-        .task-progress.collapsed .collapse-icon {
-            transform: rotate(180deg);
-        }
-
-        .right-panel.maximized {
-            grid-column: 1 / -1;
-  width: 100%;
-            max-width: 100%;
-        }
-        @media (max-width: 1024px) {
-            .right-panel.maximized {
-                margin-top: 0;
-            }
-        }
-
-        /* Style the corner controls */
-        .document-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-        }
-
-        .document-corner-controls {
-  position: absolute;
-            top: 0;
-  right: 0;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Styles for File Attachments Section */
-        .file-attachments {
-            margin-top: 1.5rem; /* Space above the section */
-            padding: 1rem;
-            background-color: #383638; /* Match task replay background */
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            opacity: 0;
-            transition: opacity 0.5s ease-in 0.5s;
-            visibility: hidden;
-        }
-
-        .file-attachments.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .file-attachments-header {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .file-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
-            gap: 1rem;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background-color: #2d2c2e; /* Darker item background */
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            gap: 0.75rem;
-            cursor: default; /* Indicate non-clickable */
-            transition: background-color 0.2s ease;
-        }
-
-        .file-item:hover {
-            background-color: #353535; /* Slight hover effect */
-        }
-
-        .file-icon-container {
-            flex-shrink: 0;
-        }
-
-        .file-icon-placeholder {
-            width: 24px;
-            height: 24px;
-            background-color: var(--accent-blue); /* Blue icon color */
-            mask-size: contain;
-            mask-repeat: no-repeat;
-            mask-position: center;
-            -webkit-mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-        }
-
-        .file-icon-placeholder.text {
-             mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>');
-        }
-
-        .file-icon-placeholder.code {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>');
-        }
-         .file-icon-placeholder.view-all {
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z"/></svg>');
-            background-color: var(--text-secondary); /* Grey icon */
-        }
-
-        .file-info {
-            overflow: hidden; /* Prevent text overflow */
-        }
-
-        .file-name {
-            color: var(--text-primary);
-            font-weight: 500;
-            font-size: 0.95rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .file-meta {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-         .view-all-files-button {
-             color: var(--text-secondary);
-             font-size: 0.95rem;
-        }
-
-        .file-item-button {
-            width: 100%;
-            background: none;
-            border: none;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            text-align: left;
-            color: inherit;
-            transition: background-color 0.2s ease;
-        }
-
-        .file-item-button:hover {
-            background-color: #353535;
-        }
-
-        /* Browser-like elements */
-        .browser-window {
-            width: 95%;
-            background-color: var(--bg-secondary);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .browser-header {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem;
-            background-color: #2a2d31;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .browser-url {
-            flex: 1;
-            background-color: #1a1b1e;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            white-space: nowrap;
-  overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .browser-url:hover {
-            background-color: #2a2d31;
-            color: var(--text-primary);
-        }
-
-        .browser-url.clicked {
-            background-color: var(--accent-blue);
-            color: var(--bg-primary);
-        }
-
-        .browser-url.clicked::after {
-            content: '✓';
-            margin-left: 0.5rem;
-            color: var(--accent-green);
-        }
-
-        .browser-content {
-            padding: 1rem;
-            min-height: 200px;
-            position: relative;
-        }
-
-        .browser-content img {
-            width: 100%;
-            height: auto;
-            border-radius: 4px;
-            transition: transform 0.3s ease;
-        }
-
-        .browser-content img:hover {
-            transform: scale(1.02);
-        }
-
-        .reference-source {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            font-style: italic;
-        }
-
-        .reasoning-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 0.5rem;
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* Animation enhancements */
-        @keyframes slideIn {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInBrowser {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .browser-window.animate {
-            animation: slideInBrowser 0.5s ease-out forwards;
-        }
-
-        .document-content.animate {
-            animation: slideIn 0.5s ease-out 0.2s forwards;
-        }
-
-        /* Modal styles for file list */
-        .modal-overlay {
-  position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.55);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-box {
-            background: #232325;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-            width: 480px;
-            max-width: 95vw;
-            max-height: 90vh;
-            padding: 0 0 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            animation: slideIn 0.3s cubic-bezier(.4,0,.2,1);
-        }
-        .modal-header {
-            padding: 1.25rem 1.5rem 0.5rem 1.5rem;
-            font-size: 1.2rem;
-            color: #dbdbda;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: #9ba1a6;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .modal-close:hover {
-            color: #fff;
-        }
-        .modal-tabs {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0 1.5rem 0.5rem 1.5rem;
-        }
-        .modal-tab {
-            background: none;
-            border: none;
-            color: #9ba1a6;
-            font-size: 1rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .modal-tab.active {
-            background: #353535;
-            color: #dbdbda;
-        }
-        .modal-file-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 1.5rem;
-            margin-top: 0.5rem;
-        }
-        .modal-file-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #2f3336;
-        }
-        .modal-file-icon {
-            width: 32px;
-            height: 32px;
-            background-color: #2b95d6;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #fff;
-        }
-        .modal-file-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-  overflow: hidden;
-}
-        .modal-file-name {
-            color: #dbdbda;
-            font-weight: 500;
-            font-size: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .modal-file-meta {
-            color: #9ba1a6;
-            font-size: 0.85rem;
-        }
-
-        /* Loading screen styles */
-        #loading-screen {
-            position: fixed;
-            top: 0%; /* Move to top-center */
-            justify-content: flex-start; /* Align content to the top */
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #1a1b1e;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 10000;
-        }
-
-        .loading-placeholder {
-            width: 80%;
-            height: 20px;
-            background-color: #2f3336;
-            margin: 10px 0;
-            border-radius: 4px;
-        }
-
-        .loading-placeholder.short {
-            width: 40%;
-        }
-
-        .proposal-popup {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 2rem;
-            overflow-y: auto;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .proposal-popup h1 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            color: var(--text-primary);
-        }
-
-        .proposal-popup .location-card {
-            background: #2d2c2e;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .proposal-popup .location-card h2 {
-            color: var(--accent-blue);
-            margin-bottom: 1rem;
-            font-size: 1.4rem;
-        }
-
-        .proposal-popup .location-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .proposal-popup .close-button {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: color 0.2s;
-        }
-
-        .proposal-popup .close-button:hover {
-            color: var(--text-primary);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manus AI - Static Japan Itinerary</title>
+  <style>
+    :root {
+      --bg-primary: #1a1b1e;
+      --bg-secondary: #212326;
+      --text-primary: #e5e5e5;
+      --text-secondary: #9ba1a6;
+      --accent-blue: #2b95d6;
+      --accent-green: #3dcc91;
+      --border-color: #2f3336;
+      --hover-bg: #2a2d31;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow: hidden;
+      /* Prevent body scrolling */
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      /* Full viewport height */
+      overflow: hidden;
+      /* Prevent app container scrolling */
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      /* Prevent shrinking */
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-icon {
+      /* Placeholder for Manus icon */
+      width: 24px;
+      height: 24px;
+      background-color: var(--accent-blue);
+      border-radius: 4px;
+    }
+
+    .logo-text {
+      font-weight: bold;
+      color: var(--text-primary);
+    }
+
+    .nav-title {
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-icon {
+      /* Placeholder for icons */
+      width: 20px;
+      height: 20px;
+      background-color: var(--text-secondary);
+      cursor: pointer;
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+    }
+
+    .link-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M10.586 13.414a1 1 0 0 1-1.414 1.414A5 5 0 0 1 6.293 9.172l1.414-1.414a1 1 0 1 1 1.414 1.414L8.414 9.879a3 3 0 0 0 4.243 4.242l.707-.707a1 1 0 0 1 1.414 0zm2.828-2.828a1 1 0 0 1 1.414-1.414A5 5 0 0 1 17.707 14.828l-1.414 1.414a1 1 0 1 1-1.414-1.414l.707-.707a3 3 0 0 0-4.243-4.242l-.707.707a1 1 0 0 1-1.414 0z"/></svg>');
+    }
+
+    .copy-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>');
+    }
+
+    .kebab-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>');
+    }
+
+    .close-panel-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>');
+    }
+
+    .open-panel-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M19 13h-6v6h-2v-6zm-4 0h-2V6h2v2zm-4 0h-2V6h2v2zm-4 0H8V6h2v2z"/></svg>');
+    }
+
+    .main-content {
+      flex: 1;
+      /* Grow to fill remaining space */
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      /* Swapped column ratio */
+      gap: 1rem;
+      padding: 1rem;
+      overflow: hidden;
+      /* Prevent overall scroll */
+      transition: grid-template-columns 0.5s ease;
+      background-color: #262729;
+    }
+
+    .main-content.right-panel-hidden {
+      grid-template-columns: 1fr;
+    }
+
+    .left-panel,
+    .right-panel {
+      background-color: #262729;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow-y: auto;
+      /* Allow individual column scrolling */
+      padding: 1.5rem;
+      transition: all 0.5s ease;
+
+      /* Hide scrollbar for WebKit browsers */
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Hide scrollbar for Firefox */
+      scrollbar-width: none;
+      /* Hide scrollbar for IE/Edge (older versions) */
+      -ms-overflow-style: none;
+    }
+
+    .left-panel {
+      transform-origin: center;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .left-panel.centered {
+      max-width: 800px;
+      transform: translateX(0);
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      /* Reduced gap */
+      padding: 1rem;
+      /* Reduced padding */
+      background-color: #262628;
+      /* Updated background color */
+      /* Keep other styles like border, overflow */
+      overflow-y: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      position: relative;
+      /* Add this to make absolute positioning work */
+    }
+
+    .right-panel.hidden {
+      transform: translateX(50px);
+      opacity: 0;
+    }
+
+    /* Fix for transition lag */
+    .main-content.right-panel-hidden .right-panel {
+      position: absolute;
+      right: -9999px;
+      visibility: hidden;
+    }
+
+    /* Left Panel: Chat/Task Trace */
+    .user-prompt,
+    .ai-response {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 6px;
+      background-color: #353535;
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      /* Preserve line breaks */
+    }
+
+    .ai-response {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 6px;
+      background-color: #262729;
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+      /* Preserve line breaks */
+    }
+
+    .ai-response-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      /* Removed invalid 'z' */
+      font-weight: bold;
+    }
+
+    .ai-icon {
+      /* Placeholder for Manus icon */
+      width: 20px;
+      height: 20px;
+      background-color: var(--accent-blue);
+      border-radius: 3px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .task-section {
+      margin-top: 1rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .task-step {
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 25px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .task-step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .task-step::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      background-color: var(--border-color);
+      border-radius: 50%;
+      border: 2px solid var(--bg-secondary);
+      z-index: 2;
+    }
+
+    .task-step:not(:last-child::after) {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 15px;
+      bottom: -1.5rem;
+      width: 2px;
+      background-color: var(--border-color);
+      z-index: 1;
+    }
+
+    .task-step.active::before {
+      background-color: var(--accent-green);
+      border-color: var(--accent-green);
+      box-shadow: 0 0 5px var(--accent-green);
+    }
+
+    .task-step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .task-step-header::before {
+      content: none;
+    }
+
+    .task-details {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-left: 0;
+      padding: 0.5rem;
+      background-color: var(--bg-primary);
+      border-radius: 20px;
+      margin-top: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border-color);
+      white-space: pre-wrap;
+    }
+
+    .typing-effect::after {
+      content: "|";
+      animation: cursor 1s infinite step-end;
+    }
+
+    @keyframes cursor {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .task-icon {
+      width: 16px;
+      height: 16px;
+      background-color: var(--text-secondary);
+      flex-shrink: 0;
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+    }
+
+    .command-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M4 17h16v2H4zm16-9h-2V6h2v2zm-4 0h-2V6h2v2zm-4 0H8V6h2v2z"/></svg>');
+    }
+
+    .file-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6-6 6z"/></svg>');
+    }
+
+    .search-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 and 5.34-1.48l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>');
+    }
+
+    .browse-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>');
+    }
+
+    .scroll-icon {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41-1.41z"/></svg>');
+    }
+
+    .task-final,
+    .task-replay-completed {
+      opacity: 0;
+      transition: opacity 0.5s ease-in 0.5s;
+      visibility: hidden;
+    }
+
+    .task-final.visible,
+    .task-replay-completed.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .task-final-text {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .task-final-text::before {
+      content: "✔";
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    .watch-button {
+      background-color: var(--text-primary);
+      color: var(--bg-primary);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .progress-bar .nav-icon {
+      width: 16px;
+      height: 16px;
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="m7 10 5 5 5-5H7z"/></svg>');
+    }
+
+    /* Right Panel: Document Viewer / Image Viewer */
+    #dynamic-image,
+    #dynamic-image-2 {
+      width: 95%;
+      /* Slightly increase width */
+      max-height: 40%;
+      /* Adjust max height */
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+      margin: 0;
+      /* Remove auto margin */
+    }
+
+    #website-display {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background-color: var(--bg-secondary);
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      width: 95%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid var(--border-color);
+    }
+
+    #dynamic-image.hidden,
+    #dynamic-image-2.hidden,
+    #website-display.hidden {
+      display: none;
+      /* Hide images & website after animation */
+    }
+
+    /* Hide original document content initially and add transition */
+    .document-header,
+    .document-content {
+      display: none;
+      /* Start hidden */
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .document-header.visible,
+    .document-content.visible {
+      display: block;
+      /* Show after animation */
+      opacity: 1;
+      /* Fade in */
+    }
+
+    /* Ensure header flex is re-applied */
+    .document-header.visible {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Restore document content styles */
+    .document-content h3 {
+      color: var(--text-primary);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
+    }
+
+    .document-content h4 {
+      color: var(--text-primary);
+      /* Adjusted color for dark mode */
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .document-content ul {
+      list-style: disc;
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .document-content li {
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .document-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .document-content .time-block {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .document-content .proposal-list li,
+    .document-content .transport-list li {
+      color: var(--text-primary);
+    }
+
+    .document-content .proposal-list strong {
+      color: var(--accent-green);
+    }
+
+    .document-content .transport-list ul {
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+      /* Remove extra bottom margin */
+    }
+
+    .document-content .transport-list ul li {
+      color: var(--text-secondary);
+      list-style-type: circle;
+      margin-left: 1rem;
+      /* Indent sub-list */
+    }
+
+    /* Add Markdown content styles */
+    .document-content h1 {
+      color: var(--text-primary);
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .document-content h2 {
+      color: var(--text-primary);
+      font-size: 1.4rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .document-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .document-content strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .document-content ul {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    .document-content ul li {
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .document-content em {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .document-content *:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .document-header {
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        /* Make header clickable */
+      }
+    }
+
+    /* New styles for the content area and collapsed state */
+    .task-replay-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+      max-height: 1000px;
+      /* Set a large max-height for expanded state */
+    }
+
+    .task-replay-content.collapsed {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      border-top: none;
+      /* Optional: Hide border when collapsed */
+    }
+
+    /* Rotate collapse icon when collapsed */
+    .task-replay-completed.collapsed .task-replay-header .collapse-icon {
+      transform: rotate(180deg);
+    }
+
+    .computer-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .computer-icon {
+      width: 24px;
+      height: 24px;
+      background-color: var(--text-secondary);
+      border-radius: 4px;
+    }
+
+    .computer-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .computer-name {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .computer-status {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .editor-icon {
+      width: 16px;
+      height: 16px;
+      background-color: var(--text-secondary);
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .task-progress {
+      margin-top: 1rem;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .task-progress.collapsed {
+      max-height: 0;
+    }
+
+    .task-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: #2d2c2e;
+      border-radius: 4px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .task-item.completed {
+      color: var(--text-primary);
+    }
+
+    .task-item.completed::before {
+      content: "✓";
+      color: var(--accent-green);
+    }
+
+    .collapse-icon {
+      width: 20px;
+      height: 20px;
+      background-color: var(--text-secondary);
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41-1.41z"/></svg>');
+      mask-repeat: no-repeat;
+      mask-position: center;
+      transition: transform 0.3s;
+    }
+
+    .task-progress.collapsed .collapse-icon {
+      transform: rotate(180deg);
+    }
+
+    .right-panel.maximized {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+      .right-panel.maximized {
+        margin-top: 0;
+      }
+    }
+
+    /* Style the corner controls */
+    .document-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .document-corner-controls {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Styles for File Attachments Section */
+    .file-attachments {
+      margin-top: 1.5rem;
+      /* Space above the section */
+      padding: 1rem;
+      background-color: #383638;
+      /* Match task replay background */
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      opacity: 0;
+      transition: opacity 0.5s ease-in 0.5s;
+      visibility: hidden;
+    }
+
+    .file-attachments.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .file-attachments-header {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .file-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,
+          minmax(250px, 1fr));
+      /* Responsive grid */
+      gap: 1rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background-color: #2d2c2e;
+      /* Darker item background */
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      gap: 0.75rem;
+      cursor: default;
+      /* Indicate non-clickable */
+      transition: background-color 0.2s ease;
+    }
+
+    .file-item:hover {
+      background-color: #353535;
+      /* Slight hover effect */
+    }
+
+    .file-icon-container {
+      flex-shrink: 0;
+    }
+
+    .file-icon-placeholder {
+      width: 24px;
+      height: 24px;
+      background-color: var(--accent-blue);
+      /* Blue icon color */
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+    }
+
+    .file-icon-placeholder.text {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6-6 6z"/></svg>');
+    }
+
+    .file-icon-placeholder.code {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>');
+    }
+
+    .file-icon-placeholder.view-all {
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e5e5e5"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7h3V5H5v5zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z"/></svg>');
+      background-color: var(--text-secondary);
+      /* Grey icon */
+    }
+
+    .file-info {
+      overflow: hidden;
+      /* Prevent text overflow */
+    }
+
+    .file-name {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-meta {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .view-all-files-button {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .file-item-button {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      transition: background-color 0.2s ease;
+    }
+
+    .file-item-button:hover {
+      background-color: #353535;
+    }
+
+    /* Browser-like elements */
+    .browser-window {
+      width: 95%;
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .browser-header {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      background-color: #2a2d31;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .browser-url {
+      flex: 1;
+      background-color: #1a1b1e;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .browser-url:hover {
+      background-color: #2a2d31;
+      color: var(--text-primary);
+    }
+
+    .browser-url.clicked {
+      background-color: var(--accent-blue);
+      color: var(--bg-primary);
+    }
+
+    .browser-url.clicked::after {
+      content: "✓";
+      margin-left: 0.5rem;
+      color: var(--accent-green);
+    }
+
+    .browser-content {
+      padding: 1rem;
+      min-height: 200px;
+      position: relative;
+    }
+
+    .browser-content img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      transition: transform 0.3s ease;
+    }
+
+    .browser-content img:hover {
+      transform: scale(1.02);
+    }
+
+    .reference-source {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+
+    #reasoning-bar {
+      position: absolute;
+      left: 100px;
+      bottom: 20px;
+      transform: translateX(-50%);
+      width: fit-content;
+      min-width: 200px;
+      max-width: 90%;
+      padding: 10px 20px;
+      background: #272629;
+      color: #b7b7b7;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      text-align: center;
+      z-index: 1000;
+      transition: all 0.3s ease-out;
+      pointer-events: none;
+      margin: 0;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #reasoning-bar.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, 100%);
+    }
+
+    /* Animation enhancements */
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInBrowser {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .browser-window.animate {
+      animation: slideInBrowser 0.5s ease-out forwards;
+    }
+
+    .document-content.animate {
+      animation: slideIn 0.5s ease-out 0.2s forwards;
+    }
+
+    /* Modal styles for file list */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #232325;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      width: 480px;
+      max-width: 95vw;
+      max-height: 90vh;
+      padding: 0 0 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem 0.5rem 1.5rem;
+      font-size: 1.2rem;
+      color: #dbdbda;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #9ba1a6;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: #fff;
+    }
+
+    .modal-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0 1.5rem 0.5rem 1.5rem;
+    }
+
+    .modal-tab {
+      background: none;
+      border: none;
+      color: #9ba1a6;
+      font-size: 1rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .modal-tab.active {
+      background: #353535;
+      color: #dbdbda;
+    }
+
+    .modal-file-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .modal-file-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #2f3336;
+    }
+
+    .modal-file-icon {
+      width: 32px;
+      height: 32px;
+      background-color: #2b95d6;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .modal-file-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-file-name {
+      color: #dbdbda;
+      font-weight: 500;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-file-meta {
+      color: #9ba1a6;
+      font-size: 0.85rem;
+    }
+
+    /* Loading screen styles */
+    #loading-screen {
+      position: fixed;
+      top: 0%;
+      /* Move to top-center */
+      justify-content: flex-start;
+      /* Align content to the top */
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #1a1b1e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .loading-placeholder {
+      width: 80%;
+      height: 20px;
+      background-color: #2f3336;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    .loading-placeholder.short {
+      width: 40%;
+    }
+
+    .proposal-popup {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 2rem;
+      overflow-y: auto;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .proposal-popup h1 {
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+    }
+
+    .proposal-popup .location-card {
+      background: #2d2c2e;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .proposal-popup .location-card h2 {
+      color: var(--accent-blue);
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+
+    .proposal-popup .location-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .proposal-popup .close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .proposal-popup .close-button:hover {
+      color: var(--text-primary);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    #custom-info-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      max-height: 500px;
+    }
+
+    #custom-info-content.collapsed {
+      max-height: 0;
+      padding: 0;
+    }
+
+    /* Collapsible Bar Styles */
+    .collapsible-bar {
+      display: flex;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin: 1rem 0 0.5rem 0;
+      padding: 0;
+      min-height: 56px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px 0 rgba(20, 20, 20, 0.07);
+    }
+
+    .collapsible-bar:hover {
+      background: var(--hover-bg);
+      box-shadow: 0 4px 16px 0 rgba(20, 20, 20, 0.13);
+    }
+
+    .collapser-handle {
+      background-color: #383739;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      height: 5rem;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s cubic-bezier(.4, 0, .2, 1), transform 0.5s cubic-bezier(.4, 0, .2, 1);
+      pointer-events: none;
+    }
+
+    .collapser-handle.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .task-replay-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .computer-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem;
+    }
+
+    .computer-info img {
+      width: 3.5rem;
+      height: 2.5rem;
+      object-fit: cover;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-right: 0.75rem;
+      background: #232323;
+    }
+
+    .computer-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .computer-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .computer-status {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .collapser-icon {
+      width: 24px;
+      height: 24px;
+      background-color: var(--text-secondary);
+      mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239ba1a6"><path d="M7.41 8.59L12 10.83l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>');
+      mask-repeat: no-repeat;
+      mask-position: center;
+      transition: transform 0.3s;
+    }
+
+    .collapsible-bar.collapsed .collapser-icon {
+      transform: rotate(-90deg);
+    }
+
+    .task-replay-content.collapsed {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .task-list,
+    .file-attachment {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s cubic-bezier(.4, 0, .2, 1), transform 0.5s cubic-bezier(.4, 0, .2, 1);
+      pointer-events: none;
+    }
+
+    .task-list.visible,
+    .file-attachment.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
 </head>
+
 <body>
-    <div id="loading-screen">
-        <div class="loading-placeholder"></div>
-        <div class="loading-placeholder short"></div>
-        <div class="loading-placeholder"></div>
-    </div>
+  <div id="loading-screen">
+    <div class="loading-placeholder"></div>
+    <div class="loading-placeholder short"></div>
+    <div class="loading-placeholder"></div>
+  </div>
 
-    <div class="app-container">
-        <nav class="top-nav">
-            <div class="nav-left">
-                <div class="logo-icon"></div>
-                <div class="logo-text">manus</div>
-            </div>
-            <div class="nav-title">7-Day Japan Itinerary with Proposal Ideas</div>
-            <div class="nav-right">
-                <div class="nav-icon toggle-panel-icon" id="toggle-panel"></div>
-                
-            </div>
-        </nav>
+  <div class="app-container">
+    <nav class="top-nav">
+      <div class="nav-left">
+        <div class="logo-icon"></div>
+        <div class="logo-text">manus</div>
+      </div>
+      <div class="nav-title">7-Day Japan Itinerary with Proposal Ideas</div>
+      <div class="nav-right">
+        <div class="nav-icon toggle-panel-icon" id="toggle-panel"></div>
+      </div>
+    </nav>
 
-        <main class="main-content">
-            <div class="left-panel" id="left-panel">
-                <div class="user-prompt">
-                    I need a 7-day Japan itinerary for April 15-23 from Seattle, with a $2500-5000 budget for my fiancée and me. We love historical sites, hidden gems, and Japanese culture (kendo, tea ceremonies, Zen meditation). We want to see Nara's deer and explore cities on foot. I plan to propose during this trip and need a special location recommendation. Please provide a detailed itinerary and a simple HTML travel handbook with maps, attraction descriptions, essential Japanese phrases, and travel tips we can reference throughout our journey.
-                </div>
-
-                <div class="ai-response">
-                    <div class="ai-response-header">
-                        <span class="ai-icon"></span> manus
-                    </div>
-                    I'll help you create a 7-day Japan itinerary for your trip with your fiancée from April 15-23, including a special location for your proposal. I'll research historical sites, hidden gems, and cultural experiences like kendo, tea ceremonies, and Zen meditation, as well as plan for Nara's deer park visit. I'll also create a detailed HTML travel handbook with maps, attraction descriptions, essential Japanese phrases, and travel tips. Let me get started on this right away!
-                    <div class="task-section" id="task-section">
-                        <!-- Task steps will be injected here by JavaScript -->
-                    </div>
-                </div>
-                <div class="task-final" id="task-final-summary">
-                    <div class="task-final-text">Finalize and prepare travel documentation for delivery</div>
-                    <div class="progress-bar">8 / 8 <span class="nav-icon"></span></div>
-                </div>
-                <div class="task-replay-completed" id="task-replay-completed">
-                    <div class="task-replay-header" id="task-replay-header"> 
-                        <div class="computer-info">
-                            <div class="computer-icon"></div>
-                            <div class="computer-details">
-                                <div class="computer-name">Manus's computer</div>
-                                <div class="computer-status">
-                                    <span class="editor-icon"></span>
-                                    Manus is using Editor
-                                </div>
-                            </div>
-                        </div><!-- Add collapse icon here -->
-                    </div>
-                    <div class="task-replay-content" id="task-replay-content"> <!-- Wrap content -->
-                        <div class="task-progress" id="task-progress">
-                            <div class="task-progress-header" id="task-progress-header">
-                                <span>Task progress</span>
-                                <span>8 / 8 <span class="collapse-icon"></span></span>
-                            </div>
-                            <div class="task-list">
-                                <div class="task-item completed">Research Japan travel basics and entry requirements</div>
-                                <div class="task-item completed">Create comprehensive travel preparation checklist</div>
-                                <div class="task-item completed">Research historical sites, cultural attractions, and hidden gems in Kyoto, Tokyo, and Nara</div>
-                                <div class="task-item completed">Develop comprehensive 7-day Japan itinerary</div>
-                                <div class="task-item completed">Identify and research potential romantic proposal locations</div>
-                                <div class="task-item completed">Compile essential Japanese phrases and travel tips</div>
-                                <div class="task-item completed">Create detailed HTML travel handbook with maps and guides</div>
-                                <div class="task-item completed">Finalize and prepare travel documentation for delivery</div>
-                            </div>
-                        </div>
-                    </div> <!-- End wrap -->
-                </div>
-
-                <!-- Static File Attachments Section -->
-                <div class="file-attachments">
-                    <div class="file-list">
-                        <div class="file-item">
-                            <button class="file-item-button">
-                                <div class="file-icon-container">
-                                    <div class="file-icon-placeholder text"></div>
-                                </div>
-                                <div class="file-info">
-                                    <div class="file-name">7day_itinerary</div>
-                                    <div class="file-meta">Text・4.14 KB</div>
-                                </div>
-                            </button>
-                        </div>
-                        <div class="file-item">
-                            <button class="file-item-button">
-                                <div class="file-icon-container">
-                                    <div class="file-icon-placeholder text"></div>
-                                </div>
-                                <div class="file-info">
-                                    <div class="file-name">proposal_locations</div>
-                                    <div class="file-meta">Text・6.20 KB</div>
-                                </div>
-                            </button>
-                        </div>
-                        <div class="file-item">
-                            <button class="file-item-button">
-                                <div class="file-icon-container">
-                                    <div class="file-icon-placeholder code"></div>
-                                </div>
-                                <div class="file-info">
-                                    <div class="file-name">japan_travel_handbook.html</div>
-                                    <div class="file-meta">Code・52.68 KB</div>
-                                </div>
-                            </button>
-                        </div>
-                        <div class="file-item">
-                            <button class="file-item-button">
-                                <div class="file-icon-container">
-                                    <div class="file-icon-placeholder text"></div>
-                                </div>
-                                <div class="file-info">
-                                    <div class="file-name">todo</div>
-                                    <div class="file-meta">Text・1.89 KB</div>
-                                </div>
-                            </button>
-                        </div>
-                        <div class="file-item">
-                            <button class="file-item-button">
-                                <div class="file-icon-container">
-                                    <div class="file-icon-placeholder text"></div>
-                                </div>
-                                <div class="file-info">
-                                    <div class="file-name">japan_research</div>
-                                    <div class="file-meta">Text・3.75 KB</div>
-                                </div>
-                            </button>
-                        </div>
-                        <div class="file-item">
-                            <button class="file-item-button" id="view-all-files-btn">
-                                <div class="file-icon-container">
-                                    <div class="file-icon-placeholder view-all"></div>
-                                </div>
-                                <div class="file-info">
-                                    <div class="view-all-files-button">View all files in this task</div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Static File Attachments Section -->
-
-            </div>
-
-            <div class="right-panel" id="right-panel">
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="browser-url" data-url="https://japan-travel-guide.com">https://japan-travel-guide.com</div>
-                    </div>
-                    <div class="browser-content">
-                        <img id="dynamic-image" src="" alt="Japan Scene 1">
-                    </div>
-                </div>
-
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="browser-url" data-url="https://japan-tourism.jp">https://japan-tourism.jp</div>
-                    </div>
-                    <div class="browser-content">
-                        <img id="dynamic-image-2" src="" alt="Japan Scene 2">
-                    </div>
-                </div>
-
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="browser-url" data-url="https://japan-rail-pass.com">https://japan-rail-pass.com</div>
-                    </div>
-                    <div class="browser-content">
-                        <p id="website-display">Loading travel information...</p>
-                    </div>
-                </div>
-
-                <div class="document-header" id="document-header">
-                      <div class="document-title">
-                          <span class="doc-icon"></span> 7day_itinerary
-                      </div>
-                      <div class="document-controls">
-                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z\'/%3E%3C/svg%3E');"></span>
-                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z\'/%3E%3C/svg%3E');"></span>
-                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z\'/%3E%3C/svg%3E');"></span>
-                          <span class="nav-icon" style="mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M10.59 7.41 12 6l6 6-6 6-1.41-1.41L15.17 12z\'/%3E%3C/svg%3E');"></span>
-                      </div>
-                 </div>
-                 <div class="document-content" id="document-content">
-                     <!-- Itinerary will be injected here -->
-                 </div>
-                 <div id="reasoning-bar" class="reasoning-bar">Initializing...</div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal for all files in this task -->
-    <div class="modal-overlay" id="file-modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          All files in this task
-          <button class="modal-close" id="file-modal-close" title="Close">&times;</button>
+    <main class="main-content">
+      <div class="left-panel" id="left-panel">
+        <div class="user-prompt">
+          I need a 7-day Japan itinerary for April 15-23 from Seattle, with a
+          $2500-5000 budget for my fiancée and me. We love historical sites,
+          hidden gems, and Japanese culture (kendo, tea ceremonies, Zen
+          meditation). We want to see Nara's deer and explore cities on foot.
+          I plan to propose during this trip and need a special location
+          recommendation. Please provide a detailed itinerary and a simple
+          HTML travel handbook with maps, attraction descriptions, essential
+          Japanese phrases, and travel tips we can reference throughout our
+          journey.
         </div>
-        <div class="modal-tabs">
-          <button class="modal-tab active" data-tab="all">All</button>
-          <button class="modal-tab" data-tab="documents">Documents</button>
-          <button class="modal-tab" data-tab="images">Images</button>
-          <button class="modal-tab" data-tab="code">Code files</button>
-          <button class="modal-tab" data-tab="links">Links</button>
+
+        <div class="ai-response">
+          <div class="ai-response-header">
+            <span class="ai-icon"></span> manus
+          </div>
+          I'll help you create a 7-day Japan itinerary for your trip with your
+          fiancée from April 15-23, including a special location for your
+          proposal. I'll research historical sites, hidden gems, and cultural
+          experiences like kendo, tea ceremonies, and Zen meditation, as well
+          as plan for Nara's deer park visit. I'll also create a detailed HTML
+          travel handbook with maps, attraction descriptions, essential
+          Japanese phrases, and travel tips. Let me get started on this right
+          away!
+          <div class="task-section" id="task-section">
+            <!-- Task steps will be injected here by JavaScript -->
+          </div>
         </div>
-        <div class="modal-file-list" id="modal-file-list">
-          <!-- Files will be injected here -->
+        <div class="task-final" id="task-final-summary">
+          <div class="task-final-text">
+            Finalize and prepare travel documentation for delivery
+          </div>
+          <div class="progress-bar">8 / 8</div>
+        </div>
+        <!-- Static File Attachments Section -->
+        <div class="file-attachments">
+          <div class="file-list">
+            <div class="file-item">
+              <button class="file-item-button">
+                <div class="file-icon-container">
+                  <div class="file-icon-placeholder text"></div>
+                </div>
+                <div class="file-info">
+                  <div class="file-name">7day_itinerary</div>
+                  <div class="file-meta">Text・4.14 KB</div>
+                </div>
+              </button>
+            </div>
+            <div class="file-item">
+              <button class="file-item-button">
+                <div class="file-icon-container">
+                  <div class="file-icon-placeholder text"></div>
+                </div>
+                <div class="file-info">
+                  <div class="file-name">proposal_locations</div>
+                  <div class="file-meta">Text・6.20 KB</div>
+                </div>
+              </button>
+            </div>
+            <div class="file-item">
+              <button class="file-item-button">
+                <div class="file-icon-container">
+                  <div class="file-icon-placeholder code"></div>
+                </div>
+                <div class="file-info">
+                  <div class="file-name">japan_travel_handbook.html</div>
+                  <div class="file-meta">Code・52.68 KB</div>
+                </div>
+              </button>
+            </div>
+            <div class="file-item">
+              <button class="file-item-button">
+                <div class="file-icon-container">
+                  <div class="file-icon-placeholder text"></div>
+                </div>
+                <div class="file-info">
+                  <div class="file-name">todo</div>
+                  <div class="file-meta">Text・1.89 KB</div>
+                </div>
+              </button>
+            </div>
+            <div class="file-item">
+              <button class="file-item-button">
+                <div class="file-icon-container">
+                  <div class="file-icon-placeholder text"></div>
+                </div>
+                <div class="file-info">
+                  <div class="file-name">japan_research</div>
+                  <div class="file-meta">Text・3.75 KB</div>
+                </div>
+              </button>
+            </div>
+            <div class="file-item">
+              <button class="file-item-button" id="view-all-files-btn">
+                <div class="file-icon-container">
+                  <div class="file-icon-placeholder view-all"></div>
+                </div>
+                <div class="file-info">
+                  <div class="view-all-files-button">
+                    View all files in this task
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- End Static File Attachments Section -->
+
+        <!-- Collapsible Section -->
+        <div class="collapsible-bar" id="task-replay-collapser" style="background-color: #383739;">
+          <div class="collapser-handle">
+            <div class="task-replay-header" id="task-replay-header">
+              <div class="computer-info">
+                <img
+                  src="https://www.researchgate.net/publication/264464445/figure/fig3/AS:392420400353290@1470571722575/Example-of-Java-code-to-implement-criterion.png"
+                  alt="Japan Travel"
+                  style="width: 6rem; height: 4rem; object-fit: cover; border: 1px solid var(--border-color); border-radius: 10px; margin: 0.75rem;" />
+                <div class="computer-details">
+                  <div class="computer-name">Manus's computer</div>
+                  <div class="computer-status">
+                    <span class="editor-icon"></span>
+                    Manus is using Editor
+                  </div>
+                </div>
+              </div>
+              <!-- Add collapse icon here -->
+            </div>
+            <!-- <div class="collapser-icon"></div> -->
+          </div>
+          <!-- Example Collapser Handler Content -->
+          <!-- <div class="collapser-handle">
+            <span class="task-replay-header">
+            </span>
+          </div> -->
+        </div>
+
+        <div class="task-replay-completed" id="task-replay-completed">
+          <div class="task-replay-content" id="task-replay-content">
+            <!-- Wrap content -->
+            <div class="task-progress" id="task-progress">
+              <div class="task-progress-header" id="task-progress-header">
+                <span>Task progress</span>
+                <span>8 / 8 <span class="collapse-icon"></span></span>
+              </div>
+              <div class="task-list">
+                <div class="task-item completed">
+                  Research Japan travel basics and entry requirements
+                </div>
+                <div class="task-item completed">
+                  Create comprehensive travel preparation checklist
+                </div>
+                <div class="task-item completed">
+                  Research historical sites, cultural attractions, and hidden
+                  gems in Kyoto, Tokyo, and Nara
+                </div>
+                <div class="task-item completed">
+                  Develop comprehensive 7-day Japan itinerary
+                </div>
+                <div class="task-item completed">
+                  Identify and research potential romantic proposal locations
+                </div>
+                <div class="task-item completed">
+                  Compile essential Japanese phrases and travel tips
+                </div>
+                <div class="task-item completed">
+                  Create detailed HTML travel handbook with maps and guides
+                </div>
+                <div class="task-item completed">
+                  Finalize and prepare travel documentation for delivery
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End wrap -->
         </div>
       </div>
+
+      <div class="right-panel" id="right-panel">
+        <div class="browser-window">
+          <div class="browser-header">
+            <div class="browser-url" data-url="https://japan-travel-guide.com">
+              https://japan-travel-guide.com
+            </div>
+          </div>
+          <div class="browser-content">
+            <img id="dynamic-image" src="" alt="Japan Scene 1" />
+          </div>
+        </div>
+
+        <div class="browser-window">
+          <div class="browser-header">
+            <div class="browser-url" data-url="https://japan-tourism.jp">
+              https://japan-tourism.jp
+            </div>
+          </div>
+          <div class="browser-content">
+            <img id="dynamic-image-2" src="" alt="Japan Scene 2" />
+          </div>
+        </div>
+
+        <div class="browser-window">
+          <div class="browser-header">
+            <div class="browser-url" data-url="https://japan-rail-pass.com">
+              https://japan-rail-pass.com
+            </div>
+          </div>
+          <div class="browser-content">
+            <p id="website-display">Loading travel information...</p>
+          </div>
+        </div>
+
+        <div class="document-header" id="document-header">
+          <div class="document-title">
+            <span class="doc-icon"></span> 7day_itinerary
+          </div>
+          <div class="document-controls">
+            <span class="nav-icon" style="
+                  mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41-1.41z\'/%3E%3C/svg%3E');
+                "></span>
+            <span class="nav-icon" style="
+                  mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z\'/%3E%3C/svg%3E');
+                "></span>
+            <span class="nav-icon" style="
+                  mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M15.41 7.41L12 10.83l-3.59 3.58L9 12l6-6 6 6 1.41-1.41z\'/%3E%3C/svg%3E');
+                "></span>
+            <span class="nav-icon" style="
+                  mask-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%239ba1a6\'%3E%3Cpath d=\'M10.59 7.41 12 6l6 6-6 6-1.41-1.41L15.17 12z\'/%3E%3C/svg%3E');
+                "></span>
+          </div>
+        </div>
+        <div class="document-content" id="document-content">
+          <!-- Itinerary will be injected here -->
+        </div>
+        <div id="reasoning-bar" class="reasoning-bar">Initializing...</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal for all files in this task -->
+  <div class="modal-overlay" id="file-modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        All files in this task
+        <button class="modal-close" id="file-modal-close" title="Close">
+          &times;
+        </button>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="all">All</button>
+        <button class="modal-tab" data-tab="documents">Documents</button>
+        <button class="modal-tab" data-tab="images">Images</button>
+        <button class="modal-tab" data-tab="code">Code files</button>
+        <button class="modal-tab" data-tab="links">Links</button>
+      </div>
+      <div class="modal-file-list" id="modal-file-list">
+        <!-- Files will be injected here -->
+      </div>
     </div>
-    
-    <script>
-        const THINKING_DURATION = 10000; // total thinking time in ms
-        const japanImageUrls = [
-            "https://ttgasia.2017.ttgasia.com/wp-content/uploads/sites/2/2023/04/Dotoburi-in-Osaka_640.jpg",
-            "https://www.aljazeera.com/wp-content/uploads/2024/07/AFP__20240311__34LB4CK__v1__HighRes__JapanLifestyleTourism-1-1721361890.jpg?resize=1920%2C1440",
-            "https://www.thetimes.com/imageserver/image/%2Fmethode%2Ftimes%2Fprod%2Fweb%2Fbin%2Fec6f7cf8-6dbe-4b56-9972-cbf4fbc76462.jpg?crop=1564%2C880%2C318%2C0",
-            "https://www.hindustantimes.com/ht-img/img/2024/04/29/550x309/japan_tourism_1713344920936_1714387811211.jpg",
-            "https://media.istockphoto.com/id/1161555395/photo/osaka-tower-and-view-of-the-neon-advertisements-in-shinsekai-district-at-dusk-osaka-japan.jpg?s=612x612&w=0&k=20&c=2z2ViOxKPfKzq_rDtCE_aW7KxbROK7MUJ-ti-Oqf4KQ=",
-            "https://pohcdn.com/guide/sites/default/files/styles/paragraph__live_banner__lb_image__1880bp/public/live_banner/japan-1.jpg",
-            "https://res.cloudinary.com/jnto/image/upload/w_600,fl_lossy,f_auto,q_auto,c_scale/v1/media/filer_public/4d/e0/4de04120-b27a-4f12-b9e4-413c6fcbe7fb/49tokushima_udatsu_edit_3_dbwqpo",
-            "https://img.kyodonews.net/english/public/images/posts/b0467b7bb63b5f0fbaa42ef56c03f801/photo_l.jpg"
-         ];
+  </div>
 
-        const japanImageUrls2 = [
-            "https://miro.medium.com/v2/resize:fit:1118/1*AauvYRhYA6GHTdkC4VbWgA.png",
-            "https://blog.btrax.com/wp-content/uploads/2010/08/2.jpg",
-            "https://digitalcommunications.wp.st-andrews.ac.uk/files/2016/02/japanese-design.jpg",
-            "https://assets.hongkiat.com/uploads/japanese-web-design/sankei.jpg",
-            "https://www.humblebunny.com/wp-content/uploads/example-japanese-web-design-kakaku.jpg",
-            "https://nothingapps.com/wp-content/uploads/2024/01/example-japanese-web-design-yahoo-2013-2020.jpg",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNkiXmARqgMPtFfQjIH0CFuNovv-D16Jlhaw&s",
-            "https://speckyboy.com/wp-content/uploads/2016/05/japanese-web-deign-01.jpg"
-        ];
+  <script>
+    const THINKING_DURATION = 1000; // total thinking time in ms
+    const japanImageUrls = [
+      "https://ttgasia.2017.ttgasia.com/wp-content/uploads/sites/2/2023/04/Dotoburi-in-Osaka_640.jpg",
+      "https://www.aljazeera.com/wp-content/uploads/2024/07/AFP__20240311__34LB4CK__v1__HighRes__JapanLifestyleTourism-1-1721361890.jpg?resize=1920%2C1440",
+      "https://www.thetimes.com/imageserver/image/%2Fmethode%2Ftimes%2Fprod%2Fweb%2Fbin%2Fec6f7cf8-6dbe-4b56-9972-cbf4fbc76462.jpg?crop=1564%2C880%2C318%2C0",
+      "https://www.hindustantimes.com/ht-img/img/2024/04/29/550x309/japan_tourism_1713344920936_1714387811211.jpg",
+      "https://media.istockphoto.com/id/1161555395/photo/osaka-tower-and-view-of-the-neon-advertisements-in-shinsekai-district-at-dusk-osaka-japan.jpg?s=612x612&w=0&k=20&c=2z2ViOxKPfKzq_rDtCE_aW7KxbROK7MUJ-ti-Oqf4KQ=",
+      "https://pohcdn.com/guide/sites/default/files/styles/paragraph__live_banner__lb_image__1880bp/public/live_banner/japan-1.jpg",
+      "https://res.cloudinary.com/jnto/image/upload/w_600,fl_lossy,f_auto,q_auto,c_scale/v1/media/filer_public/4d/e0/4de04120-b27a-4f12-b9e4-413c6fcbe7fb/49tokushima_udatsu_edit_3_dbwqpo",
+      "https://img.kyodonews.net/english/public/images/posts/b0467b7bb63b5f0fbaa42ef56c03f801/photo_l.jpg",
+    ];
 
-        const japaneseWebsiteUrls = [
-            "yahoo.co.jp",
-            "rakuten.co.jp",
-            "cookpad.com",
-            "nikkei.com",
-            "mercari.com/jp",
-            "zozo.jp",
-            "kakaku.com",
-            "ameblo.jp"
-        ];
+    const japanImageUrls2 = [
+      "https://miro.medium.com/v2/resize:fit:1118/1*AauvYRhYA6GHTdkC4VbWgA.png",
+      "https://blog.btrax.com/wp-content/uploads/2010/08/2.jpg",
+      "https://digitalcommunications.wp.st-andrews.ac.uk/files/2016/02/japanese-design.jpg",
+      "https://www.humblebunny.com/wp-content/uploads/2024/01/example-japanese-web-design-yahoo-2013-2020.jpg",
+      "https://nothingapps.com/wp-content/uploads/2024/01/example-japanese-web-design-kakaku.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNkiXmARqgMPtFfQjIH0CFuNovv-D16Jlhaw&s",
+      "https://speckyboy.com/wp-content/uploads/2016/05/japanese-web-deign-01.jpg",
+    ];
 
-        const processTasks = [
-            {
-                title: "Researching Japan travel basics",
-                details: [
-                    { type: "search", text: "Searching: Best time to visit Japan in April" }
-                ]
-            },
-            {
-                title: "Creating todo checklist",
-                details: [
-                    { type: "file", text: "Creating file: japan_trip_checklist.md" }
-                ]
-            },
-            {
-                title: "Planning 7-day itinerary",
-                details: [
-                    { type: "browse", text: "Browsing: Kyoto travel guides" }
-                ]
-            },
-            {
-                title: "Researching transportation",
-                details: [
-                    { type: "search", text: "Searching: Japan Rail Pass information" }
-                ]
-            },
-            {
-                title: "Creating HTML travel handbook",
-                details: [
-                    { type: "file", text: "Creating file: japan_travel_handbook.html" }
-                ]
-            },
-            {
-                title: "Researching proposal locations",
-                details: [
-                    { type: "browse", text: "Browsing: Cherry blossom viewing locations" }
-                ]
-            },
-            {
-                title: "Finalizing documentation",
-                details: [
-                    { type: "command", text: "Executing command: compile_documents" }
-                ]
-            },
-            {
-                title: "Preparing delivery",
-                details: [
-                    { type: "file", text: "Creating file: README.md" }
-                ]
-            }
-        ];
+    const japaneseWebsiteUrls = [
+      "yahoo.co.jp",
+      "rakuten.co.jp",
+      "cookpad.com",
+      "nikkei.com",
+      "mercari.com/jp",
+      "zozo.jp",
+      "kakaku.com",
+      "ameblo.jp",
+    ];
 
-        // List of external reference sources to include during thinking
-        const referenceSources = [
-            'Reddit: r/JapanTravel – user discussion on best cherry blossom spots',
-            'Quora: "What is the best time to visit Kyoto?" answers roundup',
-            'TravelBlog: Tokyo Cheapo – budget travel tips in Tokyo',
-            'Reddit: r/TravelTips – packing essentials thread',
-            'Quora: "How to use JR Pass efficiently?" Q&A',
-            'Blog: Nomadic Matt – Japan itinerary guide'
-        ];
+    const processTasks = [
+      {
+        title: "Researching Japan travel basics",
+        details: [
+          {
+            type: "search",
+            text: "Searching: Best time to visit Japan in April",
+          },
+        ],
+      },
+      {
+        title: "Creating todo checklist",
+        details: [{ type: "file", text: "Creating file: japan_trip_checklist.md" }],
+      },
+      {
+        title: "Planning 7-day itinerary",
+        details: [{ type: "browse", text: "Browsing: Kyoto travel guides" }],
+      },
+      {
+        title: "Researching transportation",
+        details: [
+          { type: "search", text: "Searching: Japan Rail Pass information" },
+        ],
+      },
+      {
+        title: "Creating HTML travel handbook",
+        details: [
+          { type: "file", text: "Creating file: japan_travel_handbook.html" },
+        ],
+      },
+      {
+        title: "Researching proposal locations",
+        details: [
+          {
+            type: "browse",
+            text: "Browsing: Cherry blossom viewing locations",
+          },
+        ],
+      },
+      {
+        title: "Finalizing documentation",
+        details: [
+          { type: "command", text: "Executing command: compile_documents" },
+        ],
+      },
+      {
+        title: "Preparing delivery",
+        details: [{ type: "file", text: "Creating file: README.md" }],
+      },
+    ];
 
-        // calculate per-task delay after tasks are defined
-        const timePerTask = THINKING_DURATION / processTasks.length;
+    // List of external reference sources to include during thinking
+    const referenceSources = [
+      "Reddit: r/JapanTravel – user discussion on best cherry blossom spots",
+      'Quora: "What is the best time to visit Kyoto?" answers roundup',
+      "TravelBlog: Tokyo Cheapo – budget travel tips in Tokyo",
+      "Reddit: r/TravelTips – packing essentials thread",
+      'Quora: "How to use JR Pass efficiently?" Q&A',
+      "Blog: Nomadic Matt – Japan itinerary guide",
+    ];
 
-        const taskSection = document.getElementById('task-section');
-        const leftPanel = document.getElementById('left-panel');
-        const finalSummary = document.getElementById('task-final-summary');
-        const replayCompleted = document.getElementById('task-replay-completed');
-        const dynamicImage = document.getElementById('dynamic-image');
-        const dynamicImage2 = document.getElementById('dynamic-image-2');
-        const websiteDisplay = document.getElementById('website-display');
-        const documentHeader = document.getElementById('document-header');
-        const documentContent = document.getElementById('document-content');
-        const rightPanel = document.getElementById('right-panel');
-        const reasoningBar = document.getElementById('reasoning-bar');
-        let currentStepIndex = 0;
-        let previousStepElement = null;
-        let isProcessingTask = false; // Flag to track if a task is currently being processed
+    // calculate per-task delay after tasks are defined
+    const timePerTask = THINKING_DURATION / processTasks.length;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Loading screen handling
-            const loadingScreen = document.getElementById('loading-screen');
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 2000);
+    const taskSection = document.getElementById("task-section");
+    const leftPanel = document.getElementById("left-panel");
+    const finalSummary = document.getElementById("task-final-summary");
+    const replayCompleted = document.getElementById("task-replay-completed");
+    const dynamicImage = document.getElementById("dynamic-image");
+    const dynamicImage2 = document.getElementById("dynamic-image-2");
+    const websiteDisplay = document.getElementById("website-display");
+    const documentHeader = document.getElementById("document-header");
+    const documentContent = document.getElementById("document-content");
+    const rightPanel = document.getElementById("right-panel");
+    const reasoningBar = document.getElementById("reasoning-bar");
+    let currentStepIndex = 0;
+    let previousStepElement = null;
+    let isProcessingTask = false; // Flag to track if a task is currently being processed
 
-            // Initialize images and website display
-            dynamicImage.src = japanImageUrls[0];
-            dynamicImage2.src = japanImageUrls2[0];
-            const initialWebsiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
-            websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[initialWebsiteIndex]}`;
-            setTimeout(displayNextStep, 500);
+    document.addEventListener("DOMContentLoaded", () => {
+      // Loading screen handling
+      const loadingScreen = document.getElementById("loading-screen");
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+      }, 2000);
 
-            // Add event listeners for document controls
-            const documentControls = document.querySelector('.document-controls');
-            const navIcons = documentControls.querySelectorAll('.nav-icon');
-            
-            // Close button (last icon)
-            navIcons[navIcons.length - 1].addEventListener('click', () => {
-                documentHeader.classList.remove('visible');
-                documentContent.classList.remove('visible');
-                dynamicImage.classList.remove('hidden');
-                dynamicImage2.classList.remove('hidden');
-                websiteDisplay.classList.remove('hidden');
-            });
+      // Add event listener for process completion
+      document.addEventListener("processComplete", () => {
+        const reasoningBar = document.getElementById("reasoning-bar");
+        reasoningBar.classList.add("hidden");
+        setTimeout(() => {
+          reasoningBar.style.display = "none";
+        }, 300); // Match the transition duration
+      });
 
-            // Close panel button
-            const togglePanelBtn = document.getElementById('toggle-panel');
-            const mainContent = document.querySelector('.main-content');
-            const rightPanel = document.getElementById('right-panel');
-            const leftPanel = document.getElementById('left-panel');
-            
-            // Variable to track panel state
-            let rightPanelVisible = true;
-            
-            togglePanelBtn.addEventListener('click', () => {
-                if (rightPanelVisible) {
-                    // Hide right panel with improved transitions
-                    rightPanel.classList.add('hidden');
-                    // Apply grid change immediately but wait for panel animation
-                    setTimeout(() => {
-                        mainContent.classList.add('right-panel-hidden');
-                        leftPanel.classList.add('centered');
-                    }, 10);
-                    togglePanelBtn.classList.remove('close-panel-icon');
-                    togglePanelBtn.classList.add('open-panel-icon');
-                } else {
-                    // Show right panel with improved transitions
-                    // Remove hidden class first to prepare for animation
-                    mainContent.classList.remove('right-panel-hidden');
-                    // Force reflow to ensure the transition works
-                    rightPanel.offsetHeight;
-                    rightPanel.classList.remove('hidden');
-                    // Then apply other changes
-                    leftPanel.classList.remove('centered');
-                    togglePanelBtn.classList.remove('open-panel-icon');
-                    togglePanelBtn.classList.add('close-panel-icon');
-                }
-                // Toggle state
-                rightPanelVisible = !rightPanelVisible;
-            });
-            
-            // Initialize the toggle button with close icon class
-            togglePanelBtn.classList.add('close-panel-icon');
+      // Initialize images and website display
+      dynamicImage.src = japanImageUrls[0];
+      dynamicImage2.src = japanImageUrls2[0];
+      const initialWebsiteIndex = Math.floor(
+        Math.random() * japaneseWebsiteUrls.length
+      );
+      websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[initialWebsiteIndex]}`;
+      setTimeout(displayNextStep, 500);
 
-            // Maximize button (second icon)
-            navIcons[1].addEventListener('click', () => {
-                rightPanel.classList.toggle('maximized');
-                if (rightPanel.classList.contains('maximized')) {
-                    leftPanel.style.display = 'none';
-                } else {
-                    leftPanel.style.display = 'block';
-                }
-            });
+      // Add event listener for process completion
+      document.addEventListener("processComplete", () => {
+        const reasoningBar = document.getElementById("reasoning-bar");
+        reasoningBar.style.opacity = "0";
+        reasoningBar.style.visibility = "hidden";
+        reasoningBar.style.transform = "translateY(100%)";
+      });
 
-            // Copy button in document controls
-            const copyBtn = document.getElementById('copy-content');
-            copyBtn.addEventListener('click', () => {
-                const textToCopy = documentContent.textContent;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    // Show feedback
-                    const feedback = document.createElement('div');
-                    feedback.textContent = 'Copied to clipboard!';
-                    feedback.style.position = 'fixed';
-                    feedback.style.top = '20px';
-                    feedback.style.right = '20px';
-                    feedback.style.backgroundColor = 'var(--accent-green)';
-                    feedback.style.color = 'var(--bg-primary)';
-                    feedback.style.padding = '10px 20px';
-                    feedback.style.borderRadius = '4px';
-                    feedback.style.zIndex = '1000';
-                    document.body.appendChild(feedback);
-                    setTimeout(() => feedback.remove(), 2000);
-                });
-            });
+      // Add event listeners for document controls
+      const documentControls = document.querySelector(".document-controls");
+      const navIcons = documentControls.querySelectorAll(".nav-icon");
 
-            // Watch again button
-            document.querySelector('.watch-button').addEventListener('click', () => {
-                // Reset state
-                taskSection.innerHTML = '';
-                finalSummary.classList.remove('visible');
-                replayCompleted.classList.remove('visible');
-                currentStepIndex = 0;
-                previousStepElement = null;
-                
-                // Hide document content
-                documentHeader.classList.remove('visible');
-                documentContent.classList.remove('visible');
-                dynamicImage.classList.remove('hidden');
-                dynamicImage2.classList.remove('hidden');
-                websiteDisplay.classList.remove('hidden');
-                
-                // Restart animation
-                setTimeout(displayNextStep, 500);
-            });
+      // Close button (last icon)
+      navIcons[navIcons.length - 1].addEventListener("click", () => {
+        documentHeader.classList.remove("visible");
+        documentContent.classList.remove("visible");
+        dynamicImage.classList.remove("hidden");
+        dynamicImage2.classList.remove("hidden");
+        websiteDisplay.classList.remove("hidden");
+      });
 
-            // Add zoom functionality
-            let currentZoom = 100;
-            navIcons[0].addEventListener('click', () => {
-                currentZoom = Math.min(currentZoom + 25, 200);
-                documentContent.style.transform = `scale(${currentZoom / 100})`;
-                documentContent.style.transformOrigin = 'top left';
-            });
+      // Close panel button
+      const togglePanelBtn = document.getElementById("toggle-panel");
+      const mainContent = document.querySelector(".main-content");
+      const rightPanel = document.getElementById("right-panel");
+      const leftPanel = document.getElementById("left-panel");
 
-            navIcons[2].addEventListener('click', () => {
-                currentZoom = Math.max(currentZoom - 25, 50);
-                documentContent.style.transform = `scale(${currentZoom / 100})`;
-                documentContent.style.transformOrigin = 'top left';
-            });
+      // Variable to track panel state
+      let rightPanelVisible = true;
 
-            // Add task progress collapse functionality
-            const taskProgress = document.getElementById('task-progress');
-            const taskProgressHeader = document.getElementById('task-progress-header');
+      togglePanelBtn.addEventListener("click", () => {
+        if (rightPanelVisible) {
+          // Hide right panel with improved transitions
+          rightPanel.classList.add("hidden");
+          // Apply grid change immediately but wait for panel animation
+          setTimeout(() => {
+            mainContent.classList.add("right-panel-hidden");
+            leftPanel.classList.add("centered");
+          }, 10);
+          togglePanelBtn.classList.remove("close-panel-icon");
+          togglePanelBtn.classList.add("open-panel-icon");
+        } else {
+          // Show right panel with improved transitions
+          // Remove hidden class first to prepare for animation
+          mainContent.classList.remove("right-panel-hidden");
+          // Force reflow to ensure the transition works
+          rightPanel.offsetHeight;
+          rightPanel.classList.remove("hidden");
+          // Then apply other changes
+          leftPanel.classList.remove("centered");
+          togglePanelBtn.classList.remove("open-panel-icon");
+          togglePanelBtn.classList.add("close-panel-icon");
+        }
+        // Toggle state
+        rightPanelVisible = !rightPanelVisible;
+      });
 
-            taskProgressHeader.addEventListener('click', () => {
-                taskProgress.classList.toggle('collapsed');
-            });
+      // Initialize the toggle button with close icon class
+      togglePanelBtn.classList.add("close-panel-icon");
 
-            // Start with task progress expanded
-            taskProgress.classList.remove('collapsed');
+      // Maximize button (second icon)
+      navIcons[1].addEventListener("click", () => {
+        rightPanel.classList.toggle("maximized");
+        if (rightPanel.classList.contains("maximized")) {
+          leftPanel.style.display = "none";
+        } else {
+          leftPanel.style.display = "block";
+        }
+      });
 
-            // Add task replay collapse functionality
-            const taskReplayCompleted = document.getElementById('task-replay-completed');
-            const taskReplayHeader = document.getElementById('task-replay-header');
+      // Copy button in document controls
+      const copyBtn = document.getElementById("copy-content");
+      copyBtn.addEventListener("click", () => {
+        const textToCopy = documentContent.textContent;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          // Show feedback
+          const feedback = document.createElement("div");
+          feedback.textContent = "Copied to clipboard!";
+          feedback.style.position = "fixed";
+          feedback.style.top = "20px";
+          feedback.style.right = "20px";
+          feedback.style.backgroundColor = "var(--accent-green)";
+          feedback.style.color = "var(--bg-primary)";
+          feedback.style.padding = "10px 20px";
+          feedback.style.borderRadius = "4px";
+          feedback.style.zIndex = "1000";
+          document.body.appendChild(feedback);
+          setTimeout(() => feedback.remove(), 2000);
+        });
+      });
 
-            // Add listener to the container, check target
-            taskReplayCompleted.addEventListener('click', (event) => {
-                // Check if the click happened on the header or its direct children
-                if (taskReplayHeader.contains(event.target)) {
-                    taskReplayCompleted.classList.toggle('collapsed');
-                }
-            });
+      // Watch again button
+      document
+        .querySelector(".watch-button")
+        .addEventListener("click", () => {
+          // Reset state
+          taskSection.innerHTML = "";
+          finalSummary.classList.remove("visible");
+          replayCompleted.classList.remove("visible");
+          currentStepIndex = 0;
+          previousStepElement = null;
 
-            // Start with task replay expanded (or collapsed if you prefer)
-            taskReplayCompleted.classList.remove('collapsed'); 
+          // Hide document content
+          documentHeader.classList.remove("visible");
+          documentContent.classList.remove("visible");
+          dynamicImage.classList.remove("hidden");
+          dynamicImage2.classList.remove("hidden");
+          websiteDisplay.classList.remove("hidden");
 
-            // Add click handlers for browser URLs
-            const browserUrls = document.querySelectorAll('.browser-url');
-            browserUrls.forEach(url => {
-                url.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const url = url.getAttribute('data-url');
-                    
-                    // Add clicked class for visual feedback
-                    url.classList.add('clicked');
-                    
-                    // Remove clicked class after animation
-                    setTimeout(() => {
-                        url.classList.remove('clicked');
-                    }, 1000);
+          // Restart animation
+          setTimeout(displayNextStep, 500);
+        });
 
-                    // Update the website display text
-                    const websiteDisplay = url.closest('.browser-window').querySelector('#website-display');
-                    if (websiteDisplay) {
-                        websiteDisplay.textContent = `Browsing: ${url.textContent}`;
-                    }
+      // Add zoom functionality
+      let currentZoom = 100;
+      navIcons[0].addEventListener("click", () => {
+        currentZoom = Math.min(currentZoom + 25, 200);
+        documentContent.style.transform = `scale(${currentZoom / 100})`;
+        documentContent.style.transformOrigin = "top left";
+      });
 
-                    // Update the corresponding image
-                    const image = url.closest('.browser-window').querySelector('img');
-                    if (image) {
-                        const imageUrls = image.id === 'dynamic-image' ? japanImageUrls : japanImageUrls2;
-                        const currentIndex = imageUrls.indexOf(image.src);
-                        const nextIndex = (currentIndex + 1) % imageUrls.length;
-                        image.src = imageUrls[nextIndex];
-                    }
-                });
-            });
+      navIcons[2].addEventListener("click", () => {
+        currentZoom = Math.max(currentZoom - 25, 50);
+        documentContent.style.transform = `scale(${currentZoom / 100})`;
+        documentContent.style.transformOrigin = "top left";
+      });
 
-            // Modal logic
-            const modalOverlay = document.getElementById('file-modal-overlay');
-            const modalClose = document.getElementById('file-modal-close');
-            const viewAllBtn = document.getElementById('view-all-files-btn');
-            const modalTabs = document.querySelectorAll('.modal-tab');
+      // Add task progress collapse functionality
+      const taskProgress = document.getElementById("task-progress");
+      const taskProgressHeader = document.getElementById(
+        "task-progress-header"
+      );
 
-            viewAllBtn.addEventListener('click', () => {
-                modalOverlay.classList.add('active');
-                renderModalFiles('all');
-                modalTabs.forEach(tab => tab.classList.remove('active'));
-                modalTabs[0].classList.add('active');
-            });
-            modalClose.addEventListener('click', () => {
-                modalOverlay.classList.remove('active');
-            });
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                  modalOverlay.classList.remove('active');
-                }
-            });
-            modalTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    modalTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    renderModalFiles(tab.getAttribute('data-tab'));
-                });
-            });
+      taskProgressHeader.addEventListener("click", () => {
+        taskProgress.classList.toggle("collapsed");
+      });
 
-            // Add click handler for file buttons
-            document.querySelectorAll('.file-item-button').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const fileName = this.querySelector('.file-name').textContent.trim();
-                    
-                    if (fileName === 'proposal_locations') {
-                        // Create and show proposal popup
-                        const proposalPopup = document.createElement('div');
-                        proposalPopup.className = 'proposal-popup';
-                        
-                        proposalPopup.innerHTML = `
+      // Start with task progress expanded
+      taskProgress.classList.remove("collapsed");
+
+      // Add task replay collapse functionality
+      const taskReplayCompleted = document.getElementById(
+        "task-replay-completed"
+      );
+      const taskReplayHeader = document.getElementById("task-replay-header");
+      const taskReplayContent = document.getElementById("task-replay-content");
+
+      taskReplayHeader.addEventListener("click", () => {
+        taskReplayContent.classList.toggle("collapsed");
+      });
+
+      // Add listener to the container, check target
+      taskReplayCompleted.addEventListener("click", (event) => {
+        // Check if the click happened on the header or its direct children
+        if (taskReplayHeader.contains(event.target)) {
+          taskReplayCompleted.classList.toggle("collapsed");
+        }
+      });
+
+      // Start with task replay expanded (or collapsed if you prefer)
+      taskReplayCompleted.classList.remove("collapsed");
+
+      // Add click handlers for browser URLs
+      const browserUrls = document.querySelectorAll(".browser-url");
+      browserUrls.forEach((url) => {
+        url.addEventListener("click", (e) => {
+          e.preventDefault();
+          const url = url.getAttribute("data-url");
+
+          // Add clicked class for visual feedback
+          url.classList.add("clicked");
+
+          // Remove clicked class after animation
+          setTimeout(() => {
+            url.classList.remove("clicked");
+          }, 1000);
+
+          // Update the website display text
+          const websiteDisplay = url
+            .closest(".browser-window")
+            .querySelector("#website-display");
+          if (websiteDisplay) {
+            websiteDisplay.textContent = `Browsing: ${url.textContent}`;
+          }
+
+          // Update the corresponding image
+          const image = url.closest(".browser-window").querySelector("img");
+          if (image) {
+            const imageUrls =
+              image.id === "dynamic-image" ? japanImageUrls : japanImageUrls2;
+            const currentIndex = imageUrls.indexOf(image.src);
+            const nextIndex = (currentIndex + 1) % imageUrls.length;
+            image.src = imageUrls[nextIndex];
+          }
+        });
+      });
+
+      // Modal logic
+      const modalOverlay = document.getElementById("file-modal-overlay");
+      const modalClose = document.getElementById("file-modal-close");
+      const viewAllBtn = document.getElementById("view-all-files-btn");
+      const modalTabs = document.querySelectorAll(".modal-tab");
+
+      viewAllBtn.addEventListener("click", () => {
+        modalOverlay.classList.add("active");
+        renderModalFiles("all");
+        modalTabs.forEach((tab) => tab.classList.remove("active"));
+        modalTabs[0].classList.add("active");
+      });
+      modalClose.addEventListener("click", () => {
+        modalOverlay.classList.remove("active");
+      });
+      modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) {
+          modalOverlay.classList.remove("active");
+        }
+      });
+      modalTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          modalTabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          renderModalFiles(tab.getAttribute("data-tab"));
+        });
+      });
+
+      // Add click handler for file buttons
+      document.querySelectorAll(".file-item-button").forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+          const fileName =
+            this.querySelector(".file-name").textContent.trim();
+
+          if (fileName === "proposal_locations") {
+            // Create and show proposal popup
+            const proposalPopup = document.createElement("div");
+            proposalPopup.className = "proposal-popup";
+
+            proposalPopup.innerHTML = `
                             <button class="close-button">&times;</button>
                             <h1>Romantic Proposal Locations in Japan (April 2025)</h1>
-                            <p>This guide provides detailed information about three carefully selected proposal locations during cherry blossom season in Japan.</p>
+                            <p>This guide provides detailed information about three carefully selected proposal locations during cherry blossom season in Japan, with specific recommendations for timing, photography considerations, and backup options.</p>
 
                             <div class="location-card">
                                 <h2>1. Chidorigafuchi Park, Tokyo</h2>
@@ -1680,121 +2038,175 @@
                                 
                                 <h3>Best Timing:</h3>
                                 <ul>
-                                    <li>Early morning (around sunrise) or late afternoon for best lighting</li>
-                                    <li>Cherry Blossom Peak: Expected late March to early April</li>
-                                    <li>Evening illumination: 6:00 PM to 10:00 PM</li>
+                                    <li>Time of Day: Early morning (around sunrise) or late afternoon (1-2 hours before sunset) for the best lighting and fewer crowds</li>
+                                    <li>Cherry Blossom Peak: Expected around late March to early April 2025</li>
+                                    <li>Illumination Period: Special evening illumination typically runs from late March to early April (around 6:00 PM to 10:00 PM)</li>
                                 </ul>
 
-                                <h3>Tips:</h3>
+                                <h3>Photography Considerations:</h3>
                                 <ul>
-                                    <li>Book a boat ride (¥800 per 30 minutes)</li>
-                                    <li>Visit on weekdays for fewer crowds</li>
-                                    <li>Consider hiring a local photographer</li>
+                                    <li>Morning light provides a soft, ethereal quality to photos</li>
+                                    <li>Golden hour (late afternoon) creates a warm, romantic glow</li>
+                                    <li>Evening illuminations offer a magical atmosphere with lit-up cherry blossoms</li>
                                 </ul>
-                            </div>
 
-                            <div class="location-card">
+                                <h3>Privacy Level: Moderate</h3>
+                                <ul>
+                                    <li>While popular, early morning visits can provide relative privacy</li>
+                                    <li>Weekdays are less crowded than weekends</li>
+                                    <li>The boat ride offers more privacy than the walking paths</li>
+                                </ul>
+
+                                <h3>Backup Weather Options:</h3>
+                                <ul>
+                                    <li>If raining: Consider proposing at nearby Imperial Palace East Gardens (covered areas available)</li>
+                                    <li>If too crowded: Visit on a weekday morning or consider the nearby Yasukuni Shrine which has beautiful cherry trees but fewer visitors</li>
+                                </ul>
+
+                                <h3>Special Notes:</h3>
+                                <ul>
+                                    <li>Boat rental costs approximately ¥800 per 30 minutes</li>
+                                    <li>Boats are available from 9:30 AM to 8:30 PM (last admission at 7:30 PM) during cherry blossom season</li>
+                                    <li>Consider hiring a professional photographer who knows the area for candid proposal shots</li>
+                                </ul>
+
                                 <h2>2. Maruyama Park, Kyoto</h2>
-                                <img class="location-image" src="${japanImageUrls[1]}" alt="Maruyama Park">
                                 <h3>Description:</h3>
-                                <p>Kyoto's most famous cherry blossom viewing spot, centered around a magnificent weeping cherry tree that becomes illuminated in the evenings.</p>
-                                
+                                <p>Maruyama Park is Kyoto's most famous cherry blossom viewing spot, centered around a magnificent weeping cherry tree (shidarezakura) that becomes illuminated in the evenings. The park offers a traditional Japanese garden setting with ponds and pathways.</p>
+
                                 <h3>Best Timing:</h3>
                                 <ul>
-                                    <li>Early morning (before 8:00 AM) or evening for illumination</li>
-                                    <li>Cherry Blossom Peak: March 30 to April 10</li>
-                                    <li>Evening illumination until midnight</li>
+                                    <li>Time of Day: Early morning (before 8:00 AM) for fewer crowds or evening for illuminated views</li>
+                                    <li>Cherry Blossom Peak: Expected around March 30 to April 10, 2025</li>
+                                    <li>Illumination Period: Typically from sunset until midnight during peak bloom</li>
                                 </ul>
 
-                                <h3>Tips:</h3>
+                                <h3>Photography Considerations:</h3>
                                 <ul>
-                                    <li>Visit early morning for best photos</li>
-                                    <li>Find secluded spots away from main areas</li>
-                                    <li>Reserve a nearby restaurant for celebration</li>
+                                    <li>The iconic weeping cherry tree makes for a stunning backdrop</li>
+                                    <li>Evening illuminations create a romantic, magical atmosphere</li>
+                                    <li>Morning light offers clearer photos with fewer people in the background</li>
                                 </ul>
-                            </div>
 
-                            <div class="location-card">
+                                <h3>Privacy Level: Low to Moderate</h3>
+                                <ul>
+                                    <li>Very popular during peak season</li>
+                                    <li>Early morning visits (before 7:00 AM) offer the most privacy</li>
+                                    <li>The park has various secluded corners away from the main weeping cherry tree</li>
+                                </ul>
+
+                                <h3>Backup Weather Options:</h3>
+                                <ul>
+                                    <li>If raining: Nearby Yasaka Shrine has covered areas with cherry trees</li>
+                                    <li>If too crowded: Consider the quieter Kyoto Gyoen National Garden or Kamogawa River banks</li>
+                                </ul>
+
+                                <h3>Special Notes:</h3>
+                                <ul>
+                                    <li>The weeping cherry tree tends to bloom earlier than other varieties</li>
+                                    <li>Evening illumination creates an especially romantic atmosphere</li>
+                                    <li>Food stalls and vendors are available in the park during cherry blossom season</li>
+                                    <li>Consider reserving a nearby traditional restaurant for a celebratory meal after the proposal</li>
+                                </ul>
+
                                 <h2>3. Hozugawa River, Arashiyama</h2>
-                                <img class="location-image" src="${japanImageUrls[2]}" alt="Hozugawa River">
                                 <h3>Description:</h3>
-                                <p>A peaceful boat ride through the scenic ravines of Arashiyama, with cherry blossoms lining the riverbanks.</p>
-                                
+                                <p>The Hozugawa River boat ride offers a unique proposal setting as you float through the scenic ravines of Arashiyama. During cherry blossom season, the riverbanks are lined with blooming trees, creating a natural, romantic backdrop away from the crowds.</p>
+
                                 <h3>Best Timing:</h3>
                                 <ul>
-                                    <li>Morning rides (first departure 9:00 AM)</li>
-                                    <li>Cherry Blossom Peak: late March to early April</li>
-                                    <li>Last departure: 3:30 PM</li>
+                                    <li>Time of Day: Morning boat rides (first departure around 9:00 AM) for best lighting and calmer water</li>
+                                    <li>Cherry Blossom Peak: Expected around late March to early April 2025</li>
+                                    <li>Boat Schedule: Typically operates from 9:00 AM to 3:30 PM (last departure)</li>
                                 </ul>
 
-                                <h3>Tips:</h3>
+                                <h3>Photography Considerations:</h3>
                                 <ul>
-                                    <li>Book in advance (¥4,100 per person)</li>
-                                    <li>2-hour scenic journey</li>
-                                    <li>Consider Sagano Romantic Train as backup</li>
+                                    <li>The boat ride provides unique perspectives of cherry blossoms from the water</li>
+                                    <li>Natural lighting on the river creates beautiful reflections</li>
+                                    <li>Consider hiring a photographer to wait at a scenic point or arrange with boat staff in advance</li>
                                 </ul>
-                            </div>
-                        `;
-                        
-                        const rightPanel = document.getElementById('right-panel');
-                        rightPanel.appendChild(proposalPopup);
-                        
-                        // Add close functionality
-                        proposalPopup.querySelector('.close-button').addEventListener('click', () => {
-                            proposalPopup.remove();
-                        });
-                    }
-                });
-            });
 
-            // Skip button functionality
-            document.getElementById('skip-button').addEventListener('click', () => {
-                // Simulate immediate completion of thinking and reasoning process
-                const taskSection = document.getElementById('task-section');
-                const finalSummary = document.getElementById('task-final-summary');
-                const replayCompleted = document.getElementById('task-replay-completed');
+                                <h3>Privacy Level: High</h3>
+                                <ul>
+                                    <li>Private experience on the boat</li>
+                                    <li>The 16km journey provides multiple scenic spots for proposing</li>
+                                    <li>Other passengers will be present but focused on the scenery</li>
+                                </ul>
 
-                // Clear task section and show final summary
-                taskSection.innerHTML = '';
-                finalSummary.classList.add('visible');
-                replayCompleted.classList.add('visible');
+                                <h3>Backup Weather Options:</h3>
+                                <ul>
+                                    <li>If boat rides are canceled: The nearby Sagano Romantic Train offers covered viewing of similar scenery</li>
+                                    <li>If weather is poor: Consider the indoor spaces at Arashiyama's temples or a traditional ryokan with garden views</li>
+                                </ul>
 
-                // Hide dynamic elements
-                document.getElementById('dynamic-image').classList.add('hidden');
-                document.getElementById('dynamic-image-2').classList.add('hidden');
-                document.getElementById('website-display').classList.add('hidden');
+                                <h3>Special Notes:</h3>
+                                <ul>
+                                    <li>Boat ride costs approximately ¥4,100 per person</li>
+                                    <li>The full ride takes about 2 hours from Kameoka to Arashiyama</li>
+                                    <li>Reservations are highly recommended during cherry blossom season</li>
+                                    <li>The boat ride may be canceled due to high water or bad weather (refunds are typically provided)</li>
+                                    <li>Consider combining with the Sagano Romantic Train for a full day experience</li>
+                                </ul>
 
-                // Show document content
-                const documentHeader = document.getElementById('document-header');
-                const documentContent = document.getElementById('document-content');
-                documentHeader.classList.add('visible');
-                documentContent.classList.add('visible');
+                                <h2>General Proposal Tips</h2>
+                                <ul>
+                                    <li>Weather Contingency: Always have an indoor backup plan during cherry blossom season as spring weather can be unpredictable</li>
+                                    <li>Timing Flexibility: Build 2-3 days of flexibility into your itinerary for the proposal, as cherry blossom peaks can vary</li>
+                                    <li>Professional Help: Consider hiring a local photographer familiar with the location for candid proposal photos</li>
+                                    <li>Ring Security: Keep the ring secure but accessible; consider a pocket with a zipper</li>
+                                    <li>Post-Proposal Celebration: Research and reserve a special restaurant near your chosen proposal spot</li>
+                                    <li>Local Assistance: Hotel concierges can often help with proposal arrangements and recommendations</li>
+                                    <li>Privacy Considerations: For more privacy, consider proposing during a weekday rather than weekend</li>
+                                </ul>
 
-                // Scroll to top of right panel
-                document.getElementById('right-panel').scrollTop = 0;
-            });
+                                <h2>Cherry Blossom Forecast for April 2025</h2>
+                                <ul>
+                                    <li>Tokyo: Peak bloom expected from March 25 to April 5, 2025</li>
+                                    <li>Kyoto: Peak bloom expected from March 30 to April 10, 2025</li>
+                                    <li>Arashiyama: Similar to Kyoto's forecast, with potential for slightly earlier blooming</li>
+                                </ul>
+                                <p><em>Note: Cherry blossom forecasts are updated regularly starting in January of each year. Check the latest forecast closer to your travel date.</em></p>
+                            `;
+            const rightPanel = document.getElementById("right-panel");
+            rightPanel.appendChild(proposalPopup);
 
-            // Add click handler for proposal locations
-            document.addEventListener('click', function(e) {
-                if (e.target.matches('.proposal-list li strong, .proposal-list li')) {
-                    // Hide other content
-                    dynamicImage?.classList.add('hidden');
-                    dynamicImage2?.classList.add('hidden');
-                    websiteDisplay?.classList.add('hidden');
-                    
-                    // Create and show proposal popup
-                    const proposalPopup = document.createElement('div');
-                    proposalPopup.className = 'proposal-popup';
-                    
-                    const location = e.target.closest('li').textContent;
-                    const locationName = location.split(':')[0].replace('Proposal Opportunity', '').trim();
-                    
-                    proposalPopup.innerHTML = `
+            // Add close functionality
+            proposalPopup
+              .querySelector(".close-button")
+              .addEventListener("click", () => {
+                proposalPopup.remove();
+              });
+          }
+        });
+      });
+
+      // Add click handler for proposal locations
+      document.addEventListener("click", function (e) {
+        if (e.target.matches(".proposal-list li strong, .proposal-list li")) {
+          // Hide other content
+          dynamicImage?.classList.add("hidden");
+          dynamicImage2?.classList.add("hidden");
+          websiteDisplay?.classList.add("hidden");
+
+          // Create and show proposal popup
+          const proposalPopup = document.createElement("div");
+          proposalPopup.className = "proposal-popup";
+
+          const location = e.target.closest("li").textContent;
+          const locationName = location
+            .split(":")[0]
+            .replace("Proposal Opportunity", "")
+            .trim();
+
+          proposalPopup.innerHTML = `
                         <button class="close-button">&times;</button>
                         <h1>${locationName}</h1>
                         <div class="location-card">
                             <h2>Overview</h2>
-                            <img class="location-image" src="${japanImageUrls[Math.floor(Math.random() * japanImageUrls.length)]}" alt="${locationName}">
+                            <img class="location-image" src="${japanImageUrls[
+            Math.floor(Math.random() * japanImageUrls.length)
+            ]}" alt="${locationName}">
                             <p>${getLocationDescription(locationName)}</p>
                         </div>
                         <div class="location-card">
@@ -1811,138 +2223,207 @@
                             </ul>
                         </div>
                     `;
-                    
-                    rightPanel.appendChild(proposalPopup);
-                    
-                    // Add close functionality
-                    proposalPopup.querySelector('.close-button').addEventListener('click', () => {
-                        proposalPopup.remove();
-                        // Restore original content
-                        dynamicImage?.classList.remove('hidden');
-                        dynamicImage2?.classList.remove('hidden');
-                        websiteDisplay?.classList.remove('hidden');
-                    });
-                }
-            });
 
-            // Helper function to get location descriptions
-            function getLocationDescription(location) {
-                const descriptions = {
-                    'Chidorigafuchi Park': 'A romantic pedestrian path along the moat of the Imperial Palace, famous for its tunnel of cherry blossoms. The boat ride offers an intimate setting with stunning views of cherry blossoms reflecting on the water.',
-                    'Maruyama Park': 'Kyoto\'s most famous cherry blossom viewing spot, centered around a massive weeping cherry tree that\'s illuminated at night. The evening atmosphere with lanterns creates a magical setting.',
-                    'Hozugawa River': 'A peaceful boat ride through the scenic Arashiyama district, surrounded by mountains and cherry blossoms. The traditional wooden boats and skilled boatmen provide a uniquely Japanese experience.'
-                };
-                return descriptions[location] || 'A beautiful location perfect for a romantic proposal.';
-            }
+          rightPanel.appendChild(proposalPopup);
+
+          // Add close functionality
+          proposalPopup
+            .querySelector(".close-button")
+            .addEventListener("click", () => {
+              proposalPopup.remove();
+              // Restore original content
+              dynamicImage?.classList.remove("hidden");
+              dynamicImage2?.classList.remove("hidden");
+              websiteDisplay?.classList.remove("hidden");
+            });
+        }
+      });
+
+      // Helper function to get location descriptions
+      function getLocationDescription(location) {
+        const descriptions = {
+          "Chidorigafuchi Park":
+            "A romantic pedestrian path along the moat of the Imperial Palace, famous for its tunnel of cherry blossoms. The boat ride offers an intimate setting with stunning views of cherry blossoms reflecting on the water.",
+          "Maruyama Park":
+            "Kyoto's most famous cherry blossom viewing spot, centered around a massive weeping cherry tree that's illuminated at night. The evening atmosphere with lanterns creates a magical setting.",
+          "Hozugawa River":
+            "A peaceful boat ride through the scenic Arashiyama district, surrounded by mountains and cherry blossoms. The traditional wooden boats and skilled boatmen provide a uniquely Japanese experience.",
+        };
+        return (
+          descriptions[location] ||
+          "A beautiful location perfect for a romantic proposal."
+        );
+      }
+
+      // Add toggle for custom info section
+      const customInfoHeader = document.getElementById("custom-info-header");
+      const customInfoContent = document.getElementById("custom-info-content");
+      customInfoHeader.addEventListener("click", () => {
+        customInfoContent.classList.toggle("collapsed");
+      });
+    });
+
+    function updateReasoningBar(text) {
+      const reasoningBar = document.getElementById("reasoning-bar");
+      if (text) {
+        reasoningBar.textContent = text;
+        reasoningBar.classList.remove("hidden");
+      } else {
+        reasoningBar.classList.add("hidden");
+      }
+    }
+
+    function displayNextStep() {
+      if (isProcessingTask) return;
+      if (currentStepIndex < processTasks.length) {
+        updateReasoningBar(
+          `Thinking: Task ${currentStepIndex + 1} – ${processTasks[currentStepIndex].title
+          }`
+        );
+        // Position the reasoning bar in the right panel
+        const rightPanel = document.getElementById("right-panel");
+        const reasoningBar = document.getElementById("reasoning-bar");
+        reasoningBar.style.bottom = "20px";
+        reasoningBar.style.left = "50%";
+        reasoningBar.style.transform = "translateX(-50%)";
+        reasoningBar.style.position = "absolute";
+        reasoningBar.style.zIndex = "1000";
+
+        // Show reasoning bar with current task
+        reasoningBar.style.opacity = "1";
+        reasoningBar.style.visibility = "visible";
+        reasoningBar.textContent = `Thinking: Task ${currentStepIndex + 1
+          } – ${processTasks[currentStepIndex].title}`;
+
+        // Rest of your existing displayNextStep code...
+        reasoningBar.style.opacity = "1";
+        reasoningBar.style.visibility = "visible";
+        reasoningBar.style.transform = "translateY(0)";
+        reasoningBar.textContent = `Thinking: Task ${currentStepIndex + 1
+          } – ${processTasks[currentStepIndex].title}`;
+        isProcessingTask = true;
+        const task = processTasks[currentStepIndex];
+        const details = [
+          ...task.details,
+          {
+            type: "source",
+            text: `Referencing: ${referenceSources[currentStepIndex % referenceSources.length]
+              }`,
+          },
+        ];
+        const stepDiv = document.createElement("div");
+        stepDiv.className = "task-step";
+
+        // Create header
+        const headerDiv = document.createElement("div");
+        headerDiv.className = "task-step-header";
+        headerDiv.textContent = `Task ${currentStepIndex + 1}: ${task.title}`;
+        stepDiv.appendChild(headerDiv);
+
+        // Create details container
+        const detailsContainer = document.createElement("div");
+        detailsContainer.className = "task-details-container";
+
+        // Add each detail with typing effect
+        details.forEach((detail, detailIndex) => {
+          const detailDiv = document.createElement("div");
+          detailDiv.className = "task-details";
+
+          // Add appropriate icon based on type
+          const iconDiv = document.createElement("div");
+          iconDiv.className = `task-icon ${detail.type}-icon`;
+          detailDiv.appendChild(iconDiv);
+
+          // Add detail text with typing effect
+          const textSpan = document.createElement("span");
+          textSpan.className = "typing-effect";
+          detailDiv.appendChild(textSpan);
+
+          detailsContainer.appendChild(detailDiv);
+
+          // Only show one detail at a time, each completes in 0.5 seconds
+          if (detailIndex === 0) {
+            // Start typing the first detail immediately
+            const typingSpeed = calculateTypingSpeed(
+              detail.text,
+              timePerTask
+            );
+            typeText(textSpan, detail.text, 0, typingSpeed);
+          } else {
+            // Hide details that will be shown later
+            detailDiv.style.opacity = "0";
+          }
         });
 
-        function displayNextStep() {
-            if (isProcessingTask) return;
-            if (currentStepIndex < processTasks.length) {
-                // update bottom reasoning bar
-                reasoningBar.textContent = `Thinking: Task ${currentStepIndex+1} – ${processTasks[currentStepIndex].title}`;
-                isProcessingTask = true;
-                const task = processTasks[currentStepIndex];
-                const details = [...task.details, {type: 'source', text: `Referencing: ${referenceSources[currentStepIndex % referenceSources.length]}`}];
-                const stepDiv = document.createElement('div');
-                stepDiv.className = 'task-step';
-                
-                // Create header
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'task-step-header';
-                headerDiv.textContent = `Task ${currentStepIndex + 1}: ${task.title}`;
-                stepDiv.appendChild(headerDiv);
+        stepDiv.appendChild(detailsContainer);
+        taskSection.appendChild(stepDiv);
 
-                // Create details container
-                const detailsContainer = document.createElement('div');
-                detailsContainer.className = 'task-details-container';
-                
-                // Add each detail with typing effect
-                details.forEach((detail, detailIndex) => {
-                    const detailDiv = document.createElement('div');
-                    detailDiv.className = 'task-details';
-                    
-                    // Add appropriate icon based on type
-                    const iconDiv = document.createElement('div');
-                    iconDiv.className = `task-icon ${detail.type}-icon`;
-                    detailDiv.appendChild(iconDiv);
-                    
-                    // Add detail text with typing effect
-                    const textSpan = document.createElement('span');
-                    textSpan.className = 'typing-effect';
-                    detailDiv.appendChild(textSpan);
-                    
-                    detailsContainer.appendChild(detailDiv);
-                    
-                    // Only show one detail at a time, each completes in 0.5 seconds
-                    if (detailIndex === 0) {
-                        // Start typing the first detail immediately
-                        const typingSpeed = calculateTypingSpeed(detail.text, timePerTask);
-                        typeText(textSpan, detail.text, 0, typingSpeed);
-                    } else {
-                        // Hide details that will be shown later
-                        detailDiv.style.opacity = '0';
-                    }
-                });
-                
-                stepDiv.appendChild(detailsContainer);
-                taskSection.appendChild(stepDiv);
+        if (previousStepElement) {
+          previousStepElement.classList.remove("active");
+        }
 
-                if(previousStepElement) {
-                    previousStepElement.classList.remove('active');
-                }
-                
-                setTimeout(() => {
-                    stepDiv.classList.add('visible', 'active');
-                }, 10);
-                
-                previousStepElement = stepDiv;
-                stepDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => {
+          stepDiv.classList.add("visible", "active");
+        }, 10);
 
-                // Update images and website display
-                const imageIndex = currentStepIndex % japanImageUrls.length;
-                dynamicImage.src = japanImageUrls[imageIndex];
-                dynamicImage.alt = `Japan Scene 1 - ${imageIndex + 1}`;
-                
-                const imageIndex2 = currentStepIndex % japanImageUrls2.length;
-                dynamicImage2.src = japanImageUrls2[imageIndex2];
-                dynamicImage2.alt = `Japan Scene 2 - ${imageIndex2 + 1}`;
+        previousStepElement = stepDiv;
+        stepDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-                const websiteIndex = Math.floor(Math.random() * japaneseWebsiteUrls.length);
-                websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[websiteIndex]}`;
+        // Update images and website display
+        const imageIndex = currentStepIndex % japanImageUrls.length;
+        dynamicImage.src = japanImageUrls[imageIndex];
+        dynamicImage.alt = `Japan Scene 1 - ${imageIndex + 1}`;
 
-                // schedule reference text in right-panel after each task interval
-                // remove old references
-                const allBrowserContents = document.querySelectorAll('.browser-content');
-                allBrowserContents.forEach(c => c.querySelectorAll('.reference-source').forEach(el => el.remove()));
-                const refText = referenceSources[currentStepIndex % referenceSources.length];
-                const target = allBrowserContents[currentStepIndex % allBrowserContents.length];
-                setTimeout(() => {
-                    const refEl = document.createElement('p');
-                    refEl.className = 'reference-source';
-                    refEl.textContent = `Referencing: ${refText}`;
-                    target.appendChild(refEl);
-                }, timePerTask);
+        const imageIndex2 = currentStepIndex % japanImageUrls2.length;
+        dynamicImage2.src = japanImageUrls2[imageIndex2];
+        dynamicImage2.alt = `Japan Scene 2 - ${imageIndex2 + 1}`;
 
-                currentStepIndex++;
-                
-                // Process the combined details and source one by one
-                processDetailsSequentially(stepDiv, details, 0);
-            } else {
-                if(previousStepElement) {
-                     previousStepElement.classList.remove('active');
-                }
-                finalSummary.classList.add('visible');
-                replayCompleted.classList.add('visible');
-                // Add file attachments visibility
-                document.querySelector('.file-attachments').classList.add('visible');
-                leftPanel.scrollTop = leftPanel.scrollHeight;
+        const websiteIndex = Math.floor(
+          Math.random() * japaneseWebsiteUrls.length
+        );
+        websiteDisplay.textContent = `Browsing: ${japaneseWebsiteUrls[websiteIndex]}`;
 
-                dynamicImage.classList.add('hidden');
-                dynamicImage2.classList.add('hidden');
-                websiteDisplay.classList.add('hidden');
+        // schedule reference text in right-panel after each task interval
+        // remove old references
+        const allBrowserContents =
+          document.querySelectorAll(".browser-content");
+        allBrowserContents.forEach((c) =>
+          c.querySelectorAll(".reference-source").forEach((el) => el.remove())
+        );
+        const refText =
+          referenceSources[currentStepIndex % referenceSources.length];
+        const target =
+          allBrowserContents[currentStepIndex % allBrowserContents.length];
+        setTimeout(() => {
+          const refEl = document.createElement("p");
+          refEl.className = "reference-source";
+          refEl.textContent = `Referencing: ${refText}`;
+          target.appendChild(refEl);
+        }, timePerTask);
 
-                documentContent.innerHTML = `
+        currentStepIndex++;
+
+        // Process the combined details and source one by one
+        processDetailsSequentially(stepDiv, details, 0);
+      } else {
+        updateReasoningBar(""); // This will hide the reasoning bar
+        // Process complete - trigger the event
+        document.dispatchEvent(new Event("processComplete"));
+
+        if (previousStepElement) {
+          previousStepElement.classList.remove("active");
+        }
+        finalSummary.classList.add("visible");
+        replayCompleted.classList.add("visible");
+        // Add file attachments visibility
+        document.querySelector(".file-attachments").classList.add("visible");
+        leftPanel.scrollTop = leftPanel.scrollHeight;
+
+        dynamicImage.classList.add("hidden");
+        dynamicImage2.classList.add("hidden");
+        websiteDisplay.classList.add("hidden");
+
+        documentContent.innerHTML = `
                     <h3>7-Day Japan Itinerary (April 15-23, 2025)</h3>
                     <h4>Overview</h4>
                     <p>This itinerary is designed for a couple traveling from Seattle to Japan in April, focusing on historical sites, cultural experiences, and hidden gems. The plan includes Tokyo, Kyoto, and Nara, with opportunities to experience kendo, tea ceremonies, and Zen meditation. A special romantic proposal location is included during cherry blossom season.</p>
@@ -2098,80 +2579,90 @@
                          <li>Consider purchasing IC card (Suica/Pasmo) for local transit in cities</li>
                      </ul>
                 `;
-                documentHeader.classList.add('visible');
-                documentContent.classList.add('visible');
-                // Show copy button when content is ready
-                document.getElementById('copy-content').style.display = 'inline-block';
-                rightPanel.scrollTop = 0;
-            }
+        documentHeader.classList.add("visible");
+        documentContent.classList.add("visible");
+        // Show copy button when content is ready
+        document.getElementById("copy-content").style.display =
+          "inline-block";
+        rightPanel.scrollTop = 0;
+      }
 
-            // Add animation classes
-            const browserWindows = document.querySelectorAll('.browser-window');
-            browserWindows.forEach((window, index) => {
-                setTimeout(() => {
-                    window.classList.add('animate');
-                }, index * 100);
-            });
+      // Add animation classes
+      const browserWindows = document.querySelectorAll(".browser-window");
+      browserWindows.forEach((window, index) => {
+        setTimeout(() => {
+          window.classList.add("animate");
+        }, index * 100);
+      });
 
-            // Animate document content
-            setTimeout(() => {
-                documentContent.classList.add('animate');
-            }, browserWindows.length * 100);
-        }
+      // Animate document content
+      setTimeout(() => {
+        documentContent.classList.add("animate");
+      }, browserWindows.length * 100);
+    }
 
-        // Function to create typing effect - faster speed
-        function typeText(element, text, index, speed) {
-            // Speed up typing effect by typing 3 characters at a time
-            const charsPerStep = 3;
-            if (index < text.length) {
-                const nextIndex = Math.min(index + charsPerStep, text.length);
-                element.textContent = text.substring(0, nextIndex);
-                setTimeout(() => {
-                    typeText(element, text, nextIndex, speed);
-                }, speed);
-            } else {
-                element.classList.remove('typing-effect');
-            }
-        }
-        
-        // Function to calculate typing speed needed to complete in given duration
-        function calculateTypingSpeed(text, duration) {
-            return duration / text.length;
-        }
-        
-        // Function to process details one by one
-        function processDetailsSequentially(stepDiv, details, currentDetailIndex) {
-            if (currentDetailIndex >= details.length) {
-                // All details for this task have been processed
-                setTimeout(() => {
-                    isProcessingTask = false;
-                    displayNextStep();
-                }, timePerTask);
-                return;
-            }
-            
-            const detailsContainer = stepDiv.querySelector('.task-details-container');
-            const detailDivs = detailsContainer.querySelectorAll('.task-details');
-            
-            if (currentDetailIndex > 0) {
-                // Make current detail visible
-                detailDivs[currentDetailIndex].style.opacity = '1';
-                
-                // Get the text span and start typing
-                const textSpan = detailDivs[currentDetailIndex].querySelector('span');
-                const typingSpeed = calculateTypingSpeed(details[currentDetailIndex].text, timePerTask);
-                typeText(textSpan, details[currentDetailIndex].text, 0, typingSpeed);
-            }
-            
-            // Schedule the next detail to be processed after 0.5 seconds
-            setTimeout(() => {
-                processDetailsSequentially(stepDiv, details, currentDetailIndex + 1);
-            }, 500);
-        }
+    // Function to create typing effect - faster speed
+    function typeText(element, text, index, speed) {
+      // Speed up typing effect by typing 3 characters at a time
+      const charsPerStep = 3;
+      if (index < text.length) {
+        const nextIndex = Math.min(index + charsPerStep, text.length);
+        element.textContent = text.substring(0, nextIndex);
+        setTimeout(() => {
+          typeText(element, text, nextIndex, speed);
+        }, speed);
+      } else {
+        element.classList.remove("typing-effect");
+      }
+    }
 
-        // Add this function for proposal content display
-        function displayProposalContent() {
-            documentContent.innerHTML = `
+    // Function to calculate typing speed needed to complete in given duration
+    function calculateTypingSpeed(text, duration) {
+      return duration / text.length;
+    }
+
+    // Function to process details one by one
+    function processDetailsSequentially(
+      stepDiv,
+      details,
+      currentDetailIndex
+    ) {
+      if (currentDetailIndex >= details.length) {
+        // All details for this task have been processed
+        setTimeout(() => {
+          isProcessingTask = false;
+          displayNextStep();
+        }, timePerTask);
+        return;
+      }
+
+      const detailsContainer = stepDiv.querySelector(
+        ".task-details-container"
+      );
+      const detailDivs = detailsContainer.querySelectorAll(".task-details");
+
+      if (currentDetailIndex > 0) {
+        // Make current detail visible
+        detailDivs[currentDetailIndex].style.opacity = "1";
+
+        // Get the text span and start typing
+        const textSpan = detailDivs[currentDetailIndex].querySelector("span");
+        const typingSpeed = calculateTypingSpeed(
+          details[currentDetailIndex].text,
+          timePerTask
+        );
+        typeText(textSpan, details[currentDetailIndex].text, 0, typingSpeed);
+      }
+
+      // Schedule the next detail to be processed after 0.5 seconds
+      setTimeout(() => {
+        processDetailsSequentially(stepDiv, details, currentDetailIndex + 1);
+      }, 500);
+    }
+
+    // Add this function for proposal content display
+    function displayProposalContent() {
+      documentContent.innerHTML = `
                 <h1>Romantic Proposal Locations in Japan (April 2025)</h1>
                 <p>This guide provides detailed information about three carefully selected proposal locations during cherry blossom season in Japan, with specific recommendations for timing, photography considerations, and backup options.</p>
 
@@ -2311,7 +2802,25 @@
                 </ul>
                 <p><em>Note: Cherry blossom forecasts are updated regularly starting in January of each year. Check the latest forecast closer to your travel date.</em></p>
             `;
-        }
-    </script>
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const collapser = document.getElementById('task-replay-collapser');
+      const taskReplayContent = document.getElementById('task-replay-content');
+
+      if (collapser && taskReplayContent) {
+        collapser.addEventListener('click', () => {
+          console.log('Collapser clicked');
+          collapser.classList.toggle('collapsed');
+          taskReplayContent.classList.toggle('collapsed');
+        });
+      } else {
+        console.warn('Collapser or taskReplayContent not found:', collapser, taskReplayContent);
+      }
+    });
+  </script>
+  <script src="showCollapserHandle.js"></script>
 </body>
+
 </html>
