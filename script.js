@@ -219,23 +219,28 @@ document.addEventListener("DOMContentLoaded", () => {
     if (rightPanelVisible) {
       // Hide right panel with improved transitions
       rightPanel.classList.add("hidden");
-      // Apply grid change immediately but wait for panel animation
       setTimeout(() => {
         mainContent.classList.add("right-panel-hidden");
         leftPanel.classList.add("centered");
-      }, 10);
+        // Add expanded for smooth animation
+        setTimeout(() => {
+          leftPanel.classList.add("expanded");
+        }, 10);
+      }, 0);
       togglePanelBtn.classList.remove("close-panel-icon");
       togglePanelBtn.classList.add("open-panel-icon");
+      togglePanelBtn.classList.add("rotated");
     } else {
       // Show right panel with improved transitions
-      // Remove hidden class first to prepare for animation
-      mainContent.classList.remove("right-panel-hidden");
-      // Force reflow to ensure the transition works
-      rightPanel.offsetHeight;
       rightPanel.classList.remove("hidden");
-      // Then apply other changes
-      leftPanel.classList.remove("centered");
+      mainContent.classList.remove("right-panel-hidden");
+      // Remove expanded first for smooth reverse animation
+      leftPanel.classList.remove("expanded");
+      setTimeout(() => {
+        leftPanel.classList.remove("centered");
+      }, 500);
       togglePanelBtn.classList.remove("open-panel-icon");
+      togglePanelBtn.classList.remove("rotated");
       togglePanelBtn.classList.add("close-panel-icon");
     }
     // Toggle state
@@ -244,6 +249,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize the toggle button with close icon class
   togglePanelBtn.classList.add("close-panel-icon");
+  togglePanelBtn.classList.remove("open-panel-icon");
+  togglePanelBtn.classList.remove("rotated");
 
   // Maximize button (second icon)
   navIcons[1].addEventListener("click", () => {
