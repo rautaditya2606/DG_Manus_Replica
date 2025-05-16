@@ -44,6 +44,20 @@ function animateRightPanelProgress(targetPercent, duration = 600) {
 }
 document.addEventListener("DOMContentLoaded", function () {
   animateRightPanelProgress(0); // Start at 0% progress
+
+  // Collapser for task replay section
+  const collapserHandle = document.querySelector(".collapser-handle");
+  const collapserIcon = document.querySelector(".collapser-icon");
+  const taskReplayContent = document.getElementById("task-replay-content");
+
+  if (collapserHandle && taskReplayContent) {
+    collapserHandle.addEventListener("click", function () {
+      taskReplayContent.classList.toggle("collapsed");
+      if (collapserIcon) {
+        collapserIcon.classList.toggle("collapsed");
+      }
+    });
+  }
 });
 const THINKING_DURATION = 500; // total thinking time in ms
 const japanImageUrls = [
