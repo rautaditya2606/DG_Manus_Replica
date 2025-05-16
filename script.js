@@ -236,9 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mainContent.classList.remove("right-panel-hidden");
       // Remove expanded first for smooth reverse animation
       leftPanel.classList.remove("expanded");
-      setTimeout(() => {
-        leftPanel.classList.remove("centered");
-      }, 500);
+      leftPanel.classList.remove("centered");
       togglePanelBtn.classList.remove("open-panel-icon");
       togglePanelBtn.classList.remove("rotated");
       togglePanelBtn.classList.add("close-panel-icon");
