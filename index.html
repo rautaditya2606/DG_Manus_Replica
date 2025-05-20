@@ -30,7 +30,11 @@
     <main class="main-content">
       <div class="left-panel" id="left-panel">
         <div class="user-prompt">
-          I need a 7-day Japan itinerary for April 15-23 from Seattle, with a $2500-5000 budget for my fiancée and me. We love historical sites, hidden gems, and Japanese culture (kendo, tea ceremonies, Zen meditation). We want to see Nara's deer and explore cities on foot. I plan to propose during this trip and need a special location recommendation. Please provide a detailed itinerary and a simple HTML travel handbook with maps, attraction descriptions, essential Japanese phrases, and travel tips we can reference throughout our journey.
+          I need a 7-day Japan itinerary for April 15-23 from Seattle, with a $2500-5000 budget for my fiancée and me.
+          We love historical sites, hidden gems, and Japanese culture (kendo, tea ceremonies, Zen meditation). We want
+          to see Nara's deer and explore cities on foot. I plan to propose during this trip and need a special location
+          recommendation. Please provide a detailed itinerary and a simple HTML travel handbook with maps, attraction
+          descriptions, essential Japanese phrases, and travel tips we can reference throughout our journey.
         </div>
 
         <div class="ai-response">
@@ -202,6 +206,51 @@
       </div>
 
       <div class="right-panel" id="right-panel" style="position: relative">
+        <!-- Placeholder rectangle for loading effect -->
+        <div id="right-panel-placeholder" style="display: none;">
+          <div class="terminal-container">
+            <div class="terminal-header">
+              <div class="mock-terminal-titlebar">
+                <span class="mock-terminal-title">Manus's Computer</span>
+                <span class="mock-terminal-expand"></span>
+              </div>
+              <div class="mock-terminal-subheader">
+                <span class="mock-terminal-user">Manus is using <b>Terminal</b></span>
+              </div>
+              <div class="mock-terminal-executing">
+                <span class="mock-terminal-executing-label">Executing command</span>
+                <span class="mock-terminal-executing-cmd">mkdir -p japan_trip &amp;&amp; cd japan_trip &amp;&amp; touch todo.md</span>
+              </div>
+            </div>
+            
+            <div class="mock-terminal-window">
+              <pre class="mock-terminal-shell-content">
+<span class="prompt">ubuntu@sandbox:<span class="tilde">~/japan_trip</span> <span class="dollar">$</span></span> <span class="shell-cmd">cd /home/ubuntu && ls -la</span>
+
+<span class="directory-listing">
+/home/ubuntu/japan_trip/
+
+total 96
+drwxrwxr-x  2 ubuntu ubuntu  4096 Mar  2 15:15 .
+drwxr-x    12 ubuntu ubuntu  4096 Mar  2 14:59 ..
+-rw-r--r--  1 ubuntu ubuntu  4243 Mar  2 15:06 7day_itinerary.md
+-rw-r--r--  1 ubuntu ubuntu  3840 Mar  2 15:05 japan_research.md
+-rw-r--r--  1 ubuntu ubuntu 53942 Mar  2 15:15 japan_travel_handbook.html
+-rw-r--r--  1 ubuntu ubuntu  7807 Mar  2 15:11 japanese_phrases_and_tips.md
+-rw-r--r--  1 ubuntu ubuntu  6347 Mar  2 15:09 proposal_locations.md
+-rw-rw-r--  1 ubuntu ubuntu  1933 Mar  2 15:16 todo.md</span>
+
+<span class="prompt">ubuntu@sandbox:<span class="tilde">~</span> <span class="dollar">$</span></span> 
+              </pre>
+            </div>
+            
+            <div class="terminal-footer">
+              <span class="mock-terminal-checklist">
+                Finalize and prepare travel documentation for delivery
+              </span>
+            </div>
+          </div>
+        </div>
         <!-- Other right-panel content remains here -->
         <div class="browser-window">
           <div class="browser-header">
@@ -306,7 +355,7 @@
     </div>
   </div>
 
-  <script src="script.js" ></script>
+  <script src="script.js"></script>
 
 </body>
 

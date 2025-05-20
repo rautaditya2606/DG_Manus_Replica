@@ -183,6 +183,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadingScreen = document.getElementById("loading-screen");
   setTimeout(() => {
     loadingScreen.style.display = "none";
+
+    // Show right-panel placeholder, hide other content
+    const rightPanelPlaceholder = document.getElementById("right-panel-placeholder");
+    const rightPanel = document.getElementById("right-panel");
+    // Hide all direct children except the placeholder
+    Array.from(rightPanel.children).forEach(child => {
+      if (child !== rightPanelPlaceholder) child.style.display = 'none';
+    });
+    rightPanelPlaceholder.style.display = '';
+    rightPanelPlaceholder.classList.remove('hidden');
+
+    // After 1.5s, hide placeholder and show other content
+    setTimeout(() => {
+      rightPanelPlaceholder.classList.add('hidden');
+      setTimeout(() => {
+        rightPanelPlaceholder.style.display = 'none';
+        Array.from(rightPanel.children).forEach(child => {
+          if (child !== rightPanelPlaceholder) child.style.display = '';
+        });
+      }, 600); // match CSS transition
+    }, 1500);
   }, 2000);
 
   // Add event listener for process completion

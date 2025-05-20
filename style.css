@@ -1,4 +1,26 @@
 :root {
+
+/* Placeholder rectangle for right panel */
+#right-panel-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 85vh;
+  background: #23242a;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
+  margin: 48px auto 32px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s cubic-bezier(.4,0,.2,1);
+  opacity: 1;
+}
+
+#right-panel-placeholder.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
   --bg-primary: #1a1b1e;
   --bg-secondary: #212326;
   --text-primary: #e5e5e5;
@@ -1481,4 +1503,153 @@ box-shadow: 0 2px 8px 0 rgba(20, 20, 20, 0.07);
   border-radius: 8px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.mock-terminal-window {
+  width: 100%;
+  height: 100%;
+  min-height: 85vh;
+  margin: 0;
+  background: #222327;
+  border-radius: 13px;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.19);
+  overflow: hidden;
+  border: 1.5px solid #282a2e;
+  font-family: "Fira Mono", "Consolas", "Menlo", monospace;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Terminal Container */
+.terminal-container {
+  background-color: #282c34;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin: 20px 0;
+}
+
+/* Terminal Header */
+.terminal-header {
+  background-color: #21252b;
+  padding: 8px 16px;
+  border-bottom: 1px solid #181a1f;
+}
+
+.mock-terminal-titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mock-terminal-title {
+  color: #abb2bf;
+  font-size: 14px;
+}
+
+.mock-terminal-expand {
+  width: 12px;
+  height: 12px;
+  background-color: #4d4d4d;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mock-terminal-subheader {
+  color: #98c379;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.mock-terminal-executing {
+  color: #61afef;
+  font-size: 12px;
+}
+
+.mock-terminal-executing-label {
+  color: #e06c75;
+  margin-right: 8px;
+}
+
+/* Terminal Window */
+.mock-terminal-window {
+  background-color: #282c34;
+  padding: 16px;
+  min-height: 75                                                                        0px;
+  height: 60vh;
+}
+
+.mock-terminal-shell-content {
+  margin: 0;
+  color: #abb2bf;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.prompt {
+  color: #98c379;
+}
+
+.tilde {
+  color: #61afef;
+}
+
+.dollar {
+  color: #c678dd;
+}
+
+.shell-cmd {
+  color: #abb2bf;
+}
+
+/* Terminal Footer */
+.terminal-footer {
+  background-color: #21252b;
+  padding: 8px 16px;
+  border-top: 1px solid #181a1f;
+}
+
+.mock-terminal-checklist {
+  color: #98c379;
+  font-size: 12px;
+  display: block;
+  text-align: center;
+}
+
+/* Directory Listing Styles */
+.directory-listing {
+  color: #abb2bf;
+  white-space: pre;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  display: block;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+/* Terminal permissions and details */
+.directory-listing .perm {
+  color: #56b6c2;
+}
+
+.directory-listing .owner {
+  color: #98c379;
+}
+
+.directory-listing .group {
+  color: #61afef;
+}
+
+.directory-listing .size {
+  color: #d19a66;
+}
+
+.directory-listing .date {
+  color: #c678dd;
+}
+
+.directory-listing .filename {
+  color: #e5c07b;
 }
